@@ -7,58 +7,45 @@ import {
   formatDateES,
 } from "@/lib/holidays-data";
 
-function TodayHero() {
+function HeroSection() {
   const today = new Date().toISOString().split("T")[0];
   const todayHolidays = allHolidays2026.filter((h) => h.date === today);
   const isHoliday = todayHolidays.length > 0;
 
   return (
-    <section className="relative overflow-hidden py-20 sm:py-28 px-4">
-      {/* Background gradient orbs */}
-      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-[var(--primary)] opacity-10 rounded-full blur-[128px] pointer-events-none" />
-      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-[var(--accent)] opacity-10 rounded-full blur-[128px] pointer-events-none" />
-
-      <div className="relative mx-auto max-w-4xl text-center">
-        <div
-          className={`inline-flex items-center gap-3 px-6 py-3 rounded-full mb-8 animate-fade-in-up ${
-            isHoliday
-              ? "bg-[var(--success)]/20 border border-[var(--success)]/30"
-              : "bg-[var(--surface)] border border-[var(--surface-border)]"
-          }`}
-        >
-          <span className="text-3xl">{isHoliday ? "🎉" : "💼"}</span>
-          <span className="text-lg font-semibold">
-            {isHoliday
-              ? `¡Hoy es fiesta! — ${todayHolidays[0].name}`
-              : "Hoy no es festivo en España"}
+    <section className="relative w-full bg-[var(--surface-alt)] py-24 sm:py-32 px-4 flex flex-col items-center justify-center border-b border-[var(--surface-border)] overflow-hidden">
+      {/* Decorative background element, like a subtle map or image could go here. Keeping it ultra clean for now. */}
+      
+      <div className="relative mx-auto max-w-3xl text-center z-10">
+        <div className="mb-4 animate-fade-in-up">
+          <span className="font-script text-5xl sm:text-6xl text-[var(--primary)] -rotate-3 inline-block">
+            Escapadas perfectas
           </span>
         </div>
-
-        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight mb-6 animate-fade-in-up stagger-1">
-          <span className="gradient-text">Calendario de Festivos</span>
-          <br />
-          <span className="text-[var(--foreground)]">España 2026</span>
+        
+        <h1 className="text-4xl sm:text-6xl font-serif text-[var(--foreground)] mb-6 animate-fade-in-up stagger-1 leading-tight">
+          Calendario de Festivos <br/> España 2026
         </h1>
 
-        <p className="text-lg sm:text-xl text-[var(--muted)] max-w-2xl mx-auto mb-10 animate-fade-in-up stagger-2">
-          Descubre todos los festivos nacionales, autonómicos y locales.
-          Encuentra los mejores{" "}
-          <span className="text-[var(--accent)] font-semibold">puentes</span>{" "}
-          para maximizar tus vacaciones.
+        <p className="text-sm tracking-widest uppercase text-[var(--muted)] mb-10 max-w-xl mx-auto animate-fade-in-up stagger-2 leading-loose">
+          Descubre los días libres nacionales y autonómicos. 
+          Planifica tus viajes y transforma tus vacaciones en aventuras inolvidables.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-up stagger-3">
-          <a
-            href="#puentes"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--primary-dark)] text-white font-semibold text-lg hover:opacity-90 transition-all pulse-glow"
-          >
-            🌉 Ver Mejores Puentes
-          </a>
-          <a
-            href="#comunidades"
-            className="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] text-[var(--foreground)] font-semibold text-lg hover:border-[var(--primary)] transition-all"
-          >
-            📍 Buscar por Comunidad
+        <div className="bg-white p-6 inline-flex flex-col sm:flex-row items-center gap-6 shadow-sm border border-[var(--surface-border)] animate-fade-in-up stagger-3">
+          <div className="text-left">
+            <p className="text-xs uppercase tracking-widest text-[var(--muted)] mb-1">Estado de hoy</p>
+            <p className="font-serif text-xl">
+              {isHoliday ? (
+                <span className="text-[var(--primary)]">{todayHolidays[0].name} (¡Festivo!)</span>
+              ) : (
+                "Hoy es un día laborable general"
+              )}
+            </p>
+          </div>
+          <div className="hidden sm:block w-px h-10 bg-[var(--surface-border)]"></div>
+          <a href="#puentes" className="btn-primary whitespace-nowrap">
+            Ver Mejores Puentes
           </a>
         </div>
       </div>
@@ -68,33 +55,30 @@ function TodayHero() {
 
 function NationalHolidaysSection() {
   return (
-    <section className="py-16 px-4">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-          🇪🇸 Festivos <span className="gradient-text">Nacionales</span> 2026
-        </h2>
-        <p className="text-center text-[var(--muted)] mb-12 max-w-xl mx-auto">
-          Los 10 días festivos que aplican en todo el territorio español
-        </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+    <section className="py-24 px-4 bg-white">
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center mb-16">
+          <h2 className="font-script text-4xl text-[var(--primary)] mb-2">Fechas clave</h2>
+          <h3 className="font-serif text-3xl sm:text-4xl">Festivos Nacionales</h3>
+          <div className="elegant-divider max-w-xs mx-auto text-[var(--muted)] mt-6">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]"></span>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
           {festivosNacionales2026.map((holiday, i) => (
             <div
               key={holiday.id}
-              className={`glass-card p-5 animate-fade-in-up stagger-${
-                (i % 5) + 1
+              className={`elegant-card p-8 text-center animate-fade-in-up stagger-${
+                (i % 3) + 1
               }`}
             >
-              <div className="flex items-start justify-between gap-3">
-                <div>
-                  <p className="text-sm text-[var(--muted)] mb-1">
-                    {formatDateES(holiday.date)}
-                  </p>
-                  <h3 className="font-semibold text-lg">{holiday.name}</h3>
-                </div>
-                <span className="badge-national text-xs px-2.5 py-1 rounded-full font-medium whitespace-nowrap">
-                  Nacional
-                </span>
-              </div>
+              <p className="text-xs uppercase tracking-widest text-[var(--primary)] mb-3">
+                {formatDateES(holiday.date).split(',')[0]} {/* Just the weekday logic could go here, simulating */}
+                {holiday.date.split('-')[2]} / {holiday.date.split('-')[1]}
+              </p>
+              <h4 className="font-serif text-xl mb-4">{holiday.name}</h4>
+              <span className="badge-national px-3 py-1">Nacional</span>
             </div>
           ))}
         </div>
@@ -104,24 +88,20 @@ function NationalHolidaysSection() {
 }
 
 function BridgesSection() {
-  const bridges = calculateBridges(allHolidays2026).slice(0, 8);
+  const bridges = calculateBridges(allHolidays2026).slice(0, 4);
 
   return (
-    <section id="puentes" className="py-16 px-4 bg-[var(--surface)]/50">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-          🌉 Los Mejores{" "}
-          <span className="gradient-text">Puentes</span> de 2026
-        </h2>
-        <p className="text-center text-[var(--muted)] mb-4 max-w-2xl mx-auto">
-          Maximiza tus vacaciones. Te mostramos cuántos días libres puedes
-          conseguir pidiendo el mínimo de días en el trabajo.
-        </p>
-        <p className="text-center text-sm text-[var(--accent)] mb-12">
-          💡 ¿Sabías que con solo 8 días de vacaciones puedes conseguir hasta 30
-          días libres?
-        </p>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <section id="puentes" className="py-24 px-4 section-alt">
+      <div className="mx-auto max-w-5xl">
+        <div className="text-center mb-16">
+          <h2 className="font-script text-4xl text-[var(--primary)] mb-2">Escapadas largas</h2>
+          <h3 className="font-serif text-3xl sm:text-4xl">Los Mejores Puentes</h3>
+          <p className="text-sm text-[var(--muted)] mt-4 max-w-md mx-auto leading-relaxed">
+            Combina tus días de vacaciones con estos festivos estratégicos para conseguir más tiempo libre seguido.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {bridges.map((bridge, i) => {
             const location = bridge.holiday.location_id
               ? comunidades.find((c) => c.id === bridge.holiday.location_id)
@@ -130,63 +110,52 @@ function BridgesSection() {
             return (
               <div
                 key={`${bridge.holiday.id}-${i}`}
-                className={`glass-card bridge-card p-6 animate-fade-in-up stagger-${
-                  (i % 5) + 1
+                className={`bg-white border border-[var(--surface-border)] p-0 flex flex-col animate-fade-in-up stagger-${
+                  (i % 2) + 1
                 }`}
               >
-                <div className="flex items-start justify-between mb-4">
+                {/* Simulated Image Header for the card to look like a blog post */}
+                <div className="h-40 bg-[var(--surface-alt)] border-b border-[var(--surface-border)] flex items-center justify-center p-6 text-center">
+                   <h4 className="font-serif text-2xl">{bridge.holiday.name}</h4>
+                </div>
+                
+                <div className="p-8 pb-10 flex-1 flex flex-col justify-between text-center">
                   <div>
-                    <h3 className="font-bold text-lg mb-1">
-                      {bridge.holiday.name}
-                    </h3>
-                    <p className="text-sm text-[var(--muted)]">
+                    <p className="text-xs uppercase tracking-widest text-[var(--muted)] mb-2">
                       {formatDateES(bridge.holiday.date)}
                     </p>
+                    
                     {location && (
-                      <Link
-                        href={`/${location.slug}`}
-                        className="text-xs text-[var(--primary-light)] hover:underline mt-1 inline-block"
-                      >
-                        📍 {location.name}
-                      </Link>
+                      <p className="text-[0.7rem] uppercase tracking-widest text-[var(--primary)] mb-6">
+                        Exclusivo en {location.name}
+                      </p>
                     )}
-                  </div>
-                  <div className="text-right">
-                    <div className="text-3xl font-black text-[var(--accent)]">
-                      {bridge.total_days_free}
-                    </div>
-                    <div className="text-xs text-[var(--muted)]">
-                      días libres
-                    </div>
-                  </div>
-                </div>
 
-                <div className="flex items-center gap-3 pt-4 border-t border-[var(--surface-border)]">
-                  {bridge.days_off_needed === 0 ? (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--success)]/20 text-[var(--success)] text-sm font-medium">
-                      ✨ ¡Gratis! No necesitas pedir días
-                    </span>
-                  ) : (
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[var(--primary)]/20 text-[var(--primary-light)] text-sm font-medium">
-                      📝 Pide {bridge.days_off_needed} día
-                      {bridge.days_off_needed > 1 ? "s" : ""} → Consigues{" "}
-                      {bridge.total_days_free}
-                    </span>
-                  )}
-                </div>
+                    <div className="my-6">
+                      <span className="font-serif text-5xl text-[var(--foreground)] block mb-1">
+                        {bridge.total_days_free}
+                      </span>
+                      <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">días libres</span>
+                    </div>
 
-                {/* Affiliate CTA */}
-                <div className="mt-4 p-3 rounded-xl bg-[var(--accent)]/10 border border-[var(--accent)]/20">
-                  <p className="text-sm text-[var(--accent-light)] font-medium">
-                    ✈️ Aprovecha este puente:{" "}
-                    <span className="underline cursor-pointer hover:text-[var(--accent)]">
-                      Busca vuelos baratos para estas fechas
-                    </span>
-                  </p>
+                    <p className="text-sm text-[var(--foreground)] mb-8">
+                      {bridge.days_off_needed === 0 
+                        ? "Disfruta de un fin de semana largo sin gastar días de vacaciones." 
+                        : `Pide ${bridge.days_off_needed} día${bridge.days_off_needed > 1 ? 's' : ''} en el trabajo para desbloquear este puente.`}
+                    </p>
+                  </div>
+                  
+                  <a href="#" className="text-[0.75rem] uppercase tracking-widest text-[var(--primary)] hover:text-[var(--primary-hover)] border-b border-[var(--primary)] pb-1 self-center transition-colors">
+                    Planificar viaje
+                  </a>
                 </div>
               </div>
             );
           })}
+        </div>
+        
+        <div className="text-center mt-12">
+           <button className="btn-outline">Ver todos los puentes</button>
         </div>
       </div>
     </section>
@@ -199,31 +168,20 @@ function CommunitiesSection() {
   );
 
   return (
-    <section id="comunidades" className="py-16 px-4">
-      <div className="mx-auto max-w-7xl">
-        <h2 className="text-3xl sm:text-4xl font-bold text-center mb-4">
-          📍 Festivos por{" "}
-          <span className="gradient-text">Comunidad Autónoma</span>
-        </h2>
-        <p className="text-center text-[var(--muted)] mb-12 max-w-xl mx-auto">
-          Cada comunidad tiene sus propios festivos autonómicos. Selecciona la
-          tuya para ver el calendario completo.
-        </p>
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <section id="comunidades" className="py-24 px-4 bg-white">
+      <div className="mx-auto max-w-6xl text-center">
+        <h2 className="font-script text-4xl text-[var(--primary)] mb-2">Explora por</h2>
+        <h3 className="font-serif text-3xl sm:text-4xl mb-16">Destinos & Comunidades</h3>
+        
+        <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
           {regions.map((region, i) => (
             <Link
               key={region.id}
               href={`/${region.slug}`}
-              className={`glass-card p-4 text-center group animate-fade-in-up stagger-${
-                (i % 5) + 1
-              }`}
+              className="px-6 py-3 border border-[var(--surface-border)] text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors animate-fade-in-up"
+              style={{ animationDelay: `${i * 0.05}s` }}
             >
-              <h3 className="font-semibold text-sm sm:text-base group-hover:text-[var(--primary-light)] transition-colors">
-                {region.name}
-              </h3>
-              <p className="text-xs text-[var(--muted)] mt-1">
-                Ver festivos →
-              </p>
+              {region.name}
             </Link>
           ))}
         </div>
@@ -232,60 +190,13 @@ function CommunitiesSection() {
   );
 }
 
-function APISection() {
-  return (
-    <section className="py-16 px-4 bg-[var(--surface)]/50">
-      <div className="mx-auto max-w-4xl text-center">
-        <h2 className="text-3xl sm:text-4xl font-bold mb-4">
-          🛠️ <span className="gradient-text">API para Desarrolladores</span>
-        </h2>
-        <p className="text-[var(--muted)] mb-8 max-w-xl mx-auto">
-          ¿Necesitas saber si una fecha es festivo desde tu software? Integra
-          nuestra API REST en tu aplicación de RRHH, logística o e-commerce.
-        </p>
-
-        <div className="glass-card p-6 text-left mb-8">
-          <p className="text-xs text-[var(--muted)] mb-2 font-mono">
-            GET /api/v1/holidays
-          </p>
-          <pre className="bg-[var(--background)] rounded-xl p-4 overflow-x-auto text-sm font-mono text-[var(--primary-light)]">
-{`curl "https://hoyesfiesta.com/api/v1/holidays?date=2026-05-01&location=MD"
-
-// Response:
-{
-  "date": "2026-05-01",
-  "is_holiday": true,
-  "holidays": [
-    {
-      "name": "Día del Trabajador",
-      "scope": "national",
-      "location": "España (Nacional)"
-    }
-  ]
-}`}
-          </pre>
-        </div>
-
-        <Link
-          href="/api/v1/holidays?date=2026-12-25"
-          target="_blank"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[var(--primary)] text-white font-semibold hover:opacity-90 transition-all"
-        >
-          Probar API en vivo →
-        </Link>
-      </div>
-    </section>
-  );
-}
-
 export default function Home() {
   return (
     <>
-      <TodayHero />
+      <HeroSection />
       <NationalHolidaysSection />
       <BridgesSection />
       <CommunitiesSection />
-      <APISection />
     </>
   );
 }

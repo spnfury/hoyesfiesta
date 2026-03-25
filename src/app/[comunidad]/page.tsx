@@ -15,19 +15,9 @@ type Props = {
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { comunidad } = await params;
   const location = comunidades.find((c) => c.slug === comunidad);
+  if (!location) return { title: "Comunidad no encontrada" };
 
-  if (!location) {
-    return { title: "Comunidad no encontrada" };
-  }
-
-  return {
-    title: `Festivos en ${location.name} 2026 — Calendario y Puentes`,
-    description: `Calendario completo de festivos en ${location.name} para 2026. Descubre los puentes y optimiza tus vacaciones. Festivos nacionales y autonómicos.`,
-    openGraph: {
-      title: `Festivos en ${location.name} 2026`,
-      description: `Todos los festivos y mejores puentes en ${location.name} para 2026.`,
-    },
-  };
+  return { title: `Festivos en ${location.name} 2026` };
 }
 
 export async function generateStaticParams() {
@@ -40,9 +30,7 @@ export default async function CommunityPage({ params }: Props) {
   const { comunidad } = await params;
   const location = comunidades.find((c) => c.slug === comunidad);
 
-  if (!location) {
-    notFound();
-  }
+  if (!location) notFound();
 
   const holidays = getHolidaysForLocation(location.id);
   const bridges = calculateBridges(holidays);
@@ -61,88 +49,71 @@ export default async function CommunityPage({ params }: Props) {
   ];
 
   return (
-    <div className="min-h-screen">
-      {/* Hero Header */}
-      <section className="relative overflow-hidden py-16 sm:py-20 px-4">
-        <div className="absolute top-1/4 right-1/4 w-80 h-80 bg-[var(--primary)] opacity-10 rounded-full blur-[100px] pointer-events-none" />
-        <div className="mx-auto max-w-5xl">
+    <div className="min-h-screen bg-white">
+      {/* Hero Header Minimalist */}
+      <section className="pt-20 pb-16 px-4 text-center border-b border-[var(--surface-border)]">
+        <div className="mx-auto max-w-4xl">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-sm text-[var(--muted)] hover:text-[var(--primary-light)] transition-colors mb-6"
+            className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)] hover:text-[var(--primary)] transition-colors mb-12 inline-block"
           >
             ← Volver al inicio
           </Link>
-
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight mb-4 animate-fade-in-up">
-            Festivos en{" "}
-            <span className="gradient-text">{location.name}</span>
+          
+          <p className="font-script text-4xl text-[var(--primary)] mb-2">Descubre los</p>
+          <h1 className="text-4xl sm:text-6xl font-serif text-[var(--foreground)] mb-6">
+            Festivos en {location.name}
           </h1>
-          <p className="text-lg text-[var(--muted)] mb-2 animate-fade-in-up stagger-1">
-            Calendario completo 2026 — Festivos nacionales + autonómicos
-          </p>
-          <div className="flex items-center gap-4 animate-fade-in-up stagger-2">
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] text-sm">
-              📅 <span className="font-semibold text-[var(--accent)]">{holidays.length}</span>{" "}
-              festivos en total
-            </span>
-            <span className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] text-sm">
-              🌉 <span className="font-semibold text-[var(--primary-light)]">{bridges.length}</span>{" "}
-              puentes posibles
-            </span>
+          
+          <div className="elegant-divider max-w-xs mx-auto text-[var(--muted)]">
+            <span className="w-1.5 h-1.5 rounded-full bg-[var(--primary)]"></span>
+          </div>
+          
+          <div className="mt-8 flex justify-center gap-8">
+            <div className="text-center">
+              <span className="block font-serif text-3xl">{holidays.length}</span>
+              <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">días festivos</span>
+            </div>
+            <div className="w-px h-10 bg-[var(--surface-border)] my-auto"></div>
+            <div className="text-center">
+              <span className="block font-serif text-3xl">{bridges.length}</span>
+              <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">puentes largos</span>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* Puentes para esta comunidad */}
+      {/* Mejores Puentes */}
       {bridges.length > 0 && (
-        <section className="py-12 px-4 bg-[var(--surface)]/50">
+        <section className="py-20 px-4 section-alt border-b border-[var(--surface-border)]">
           <div className="mx-auto max-w-5xl">
-            <h2 className="text-2xl font-bold mb-6">
-              🌉 Puentes en {location.name}
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              {bridges.slice(0, 6).map((bridge, i) => (
-                <div
-                  key={`bridge-${i}`}
-                  className="glass-card bridge-card p-5"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-bold">{bridge.holiday.name}</h3>
-                      <p className="text-sm text-[var(--muted)]">
-                        {formatDateES(bridge.holiday.date)}
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <div className="text-2xl font-black text-[var(--accent)]">
-                        {bridge.total_days_free}
-                      </div>
-                      <div className="text-xs text-[var(--muted)]">días</div>
-                    </div>
+            <div className="text-center mb-12">
+              <h2 className="font-script text-3xl text-[var(--primary)] mb-2">Escapadas</h2>
+              <h3 className="font-serif text-3xl">Puentes Disponibles</h3>
+            </div>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+              {bridges.slice(0, 4).map((bridge, i) => (
+                <div key={`bridge-${i}`} className="bg-white p-8 elegant-card text-center">
+                  <h4 className="font-serif text-xl mb-2">{bridge.holiday.name}</h4>
+                  <p className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] mb-6">
+                    {formatDateES(bridge.holiday.date)}
+                  </p>
+                  
+                  <div className="mb-6">
+                    <span className="font-serif text-4xl text-[var(--foreground)] block">
+                      {bridge.total_days_free}
+                    </span>
+                    <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">días libres</span>
                   </div>
-                  <div className="pt-3 border-t border-[var(--surface-border)]">
-                    {bridge.days_off_needed === 0 ? (
-                      <span className="text-sm text-[var(--success)]">
-                        ✨ ¡No necesitas pedir días!
-                      </span>
-                    ) : (
-                      <span className="text-sm text-[var(--primary-light)]">
-                        📝 Pide {bridge.days_off_needed} día
-                        {bridge.days_off_needed > 1 ? "s" : ""} → Consigues{" "}
-                        {bridge.total_days_free} libres
-                      </span>
-                    )}
-                  </div>
-
-                  {/* Affiliate CTA */}
-                  <div className="mt-3 p-2.5 rounded-lg bg-[var(--accent)]/10 border border-[var(--accent)]/20">
-                    <p className="text-xs text-[var(--accent-light)]">
-                      ✈️{" "}
-                      <span className="underline cursor-pointer hover:text-[var(--accent)]">
-                        Ver vuelos y hoteles para este puente
-                      </span>
-                    </p>
-                  </div>
+                  
+                  <p className="text-sm text-[var(--muted)] mb-6">
+                    {bridge.days_off_needed === 0 
+                      ? "Sin gastar días de vacaciones." 
+                      : `Pidiendo ${bridge.days_off_needed} día${bridge.days_off_needed > 1 ? 's' : ''}.`}
+                  </p>
+                  
+                  <button className="btn-outline text-[0.7rem] py-2 px-6">Ver Opciones de Viaje</button>
                 </div>
               ))}
             </div>
@@ -150,46 +121,40 @@ export default async function CommunityPage({ params }: Props) {
         </section>
       )}
 
-      {/* Calendario mes a mes */}
-      <section className="py-12 px-4">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-2xl font-bold mb-8">
-            📅 Calendario Completo 2026
-          </h2>
+      {/* Calendario Complete Minimalist */}
+      <section className="py-20 px-4">
+        <div className="mx-auto max-w-3xl">
+          <div className="text-center mb-16">
+            <h2 className="font-script text-3xl text-[var(--primary)] mb-2">Día a día</h2>
+            <h3 className="font-serif text-3xl">Calendario 2026</h3>
+          </div>
 
-          <div className="space-y-6">
+          <div className="space-y-12">
             {Object.entries(holidaysByMonth)
               .sort(([a], [b]) => a.localeCompare(b))
               .map(([monthKey, monthHolidays]) => {
                 const monthIndex = parseInt(monthKey.split("-")[1]) - 1;
 
                 return (
-                  <div key={monthKey} className="glass-card p-5">
-                    <h3 className="text-lg font-bold mb-4 text-[var(--primary-light)]">
+                  <div key={monthKey}>
+                    <h3 className="font-serif text-2xl mb-6 relative pl-4">
+                      <span className="absolute left-0 top-1 w-1 h-6 bg-[var(--primary)]"></span>
                       {monthNames[monthIndex]}
                     </h3>
-                    <div className="space-y-3">
-                      {monthHolidays.map((h) => (
+                    <div className="grid grid-cols-1 min-w-full">
+                      {monthHolidays.map((h, i) => (
                         <div
                           key={h.id}
-                          className="flex items-center justify-between py-2 border-b border-[var(--surface-border)] last:border-0"
+                          className={`flex items-center justify-between py-4 border-b border-[var(--surface-border)] ${h.scope === "regional" ? "bg-[var(--surface-alt)] px-4 -mx-4" : ""}`}
                         >
                           <div>
-                            <p className="font-medium">{h.name}</p>
-                            <p className="text-sm text-[var(--muted)]">
+                            <p className="font-medium text-sm">{h.name}</p>
+                            <p className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] mt-1">
                               {formatDateES(h.date)}
                             </p>
                           </div>
-                          <span
-                            className={`text-xs px-2.5 py-1 rounded-full font-medium ${
-                              h.scope === "national"
-                                ? "badge-national"
-                                : "badge-regional"
-                            }`}
-                          >
-                            {h.scope === "national"
-                              ? "Nacional"
-                              : "Autonómico"}
+                          <span className={h.scope === "national" ? "badge-national" : "badge-regional px-2 py-0.5"}>
+                            {h.scope === "national" ? "Nac" : "Aut"}
                           </span>
                         </div>
                       ))}
@@ -201,23 +166,18 @@ export default async function CommunityPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Other communities navigation */}
-      <section className="py-12 px-4 bg-[var(--surface)]/50">
-        <div className="mx-auto max-w-5xl">
-          <h2 className="text-xl font-bold mb-6">
-            🗺️ Ver otras Comunidades
-          </h2>
-          <div className="flex flex-wrap gap-3">
+      {/* Explore More */}
+      <section className="py-20 px-4 section-alt border-t border-[var(--surface-border)]">
+        <div className="mx-auto max-w-5xl text-center">
+          <h3 className="font-serif text-2xl mb-8">Descubre otros calendarios</h3>
+          <div className="flex flex-wrap justify-center gap-3 max-w-3xl mx-auto">
             {comunidades
-              .filter(
-                (c) =>
-                  c.type === "autonomous_region" && c.id !== location.id
-              )
+              .filter((c) => c.type === "autonomous_region" && c.id !== location.id)
               .map((c) => (
                 <Link
                   key={c.id}
                   href={`/${c.slug}`}
-                  className="px-4 py-2 rounded-xl bg-[var(--surface)] border border-[var(--surface-border)] text-sm hover:border-[var(--primary)] hover:text-[var(--primary-light)] transition-all"
+                  className="px-5 py-2 bg-white border border-[var(--surface-border)] text-[0.7rem] uppercase tracking-widest text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
                 >
                   {c.name}
                 </Link>

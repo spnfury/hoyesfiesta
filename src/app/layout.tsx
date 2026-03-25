@@ -1,38 +1,14 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
 import "./globals.css";
 import Link from "next/link";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600", "700", "800"],
-});
-
 export const metadata: Metadata = {
   title: {
-    default: "Hoy Es Fiesta — Calendario de Festivos en España 2026",
+    default: "Hoy Es Fiesta — Calendario de Festivos",
     template: "%s | Hoy Es Fiesta",
   },
   description:
-    "Descubre si hoy es festivo en tu comunidad autónoma. Calendario completo de festivos nacionales, autonómicos y locales de España 2026. Optimiza tus puentes y vacaciones.",
-  keywords: [
-    "festivos España 2026",
-    "calendario festivos",
-    "puentes 2026",
-    "días festivos",
-    "hoy es fiesta",
-    "vacaciones España",
-  ],
-  openGraph: {
-    title: "Hoy Es Fiesta — Calendario de Festivos en España 2026",
-    description:
-      "Descubre si hoy es festivo. Calendario completo y optimizador de puentes para España 2026.",
-    url: "https://hoyesfiesta.com",
-    siteName: "Hoy Es Fiesta",
-    locale: "es_ES",
-    type: "website",
-  },
+    "Calendario elegante de festivos en España 2026. Optimiza tus escapadas y puentes con nuestra guía de vacaciones.",
 };
 
 export default function RootLayout({
@@ -41,97 +17,81 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" className={`${inter.variable} h-full antialiased`}>
+    <html lang="es" className="h-full antialiased">
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
-        {/* Navigation */}
-        <nav className="sticky top-0 z-50 border-b border-[var(--surface-border)] bg-[var(--background)]/80 backdrop-blur-xl">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="flex h-16 items-center justify-between">
-              <Link href="/" className="flex items-center gap-2 group">
-                <span className="text-2xl">🎉</span>
-                <span className="text-xl font-bold gradient-text group-hover:opacity-80 transition-opacity">
-                  Hoy Es Fiesta
-                </span>
-              </Link>
-              <div className="hidden md:flex items-center gap-8">
+        
+        {/* Topbar minimalist */}
+        <div className="w-full text-center py-2 bg-[var(--surface-alt)] border-b border-[var(--surface-border)]">
+          <p className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
+            Tu guía personal de festivos y escapadas 2026
+          </p>
+        </div>
+
+        {/* Elegant Navigation */}
+        <header className="w-full bg-white border-b border-[var(--surface-border)] sticky top-0 z-50">
+          <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+            <div className="flex h-20 items-center justify-between">
+              {/* Left Links */}
+              <div className="hidden md:flex flex-1 items-center gap-8">
                 <Link
                   href="/#comunidades"
-                  className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                  className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
                 >
-                  Comunidades
+                  Destinos
                 </Link>
                 <Link
                   href="/#puentes"
-                  className="text-sm text-[var(--muted)] hover:text-[var(--foreground)] transition-colors"
+                  className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
                 >
-                  Puentes 2026
+                  Mejores Puentes
                 </Link>
+              </div>
+
+              {/* Centered Logo */}
+              <div className="flex-1 flex justify-center">
+                <Link href="/" className="flex flex-col items-center">
+                  <span className="font-serif text-3xl font-bold tracking-tight text-[var(--foreground)]">
+                    Hoy Es Fiesta
+                  </span>
+                </Link>
+              </div>
+
+              {/* Right Links */}
+              <div className="hidden md:flex flex-1 items-center justify-end gap-8">
                 <Link
                   href="/api/v1/holidays?date=2026-05-01"
-                  className="text-sm font-medium text-[var(--primary-light)] hover:text-[var(--primary)] transition-colors"
+                  className="text-[0.75rem] uppercase tracking-widest text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
                   target="_blank"
                 >
-                  API →
+                  Herramientas API
                 </Link>
               </div>
             </div>
           </div>
-        </nav>
+        </header>
 
         {/* Main Content */}
         <main className="flex-1">{children}</main>
 
-        {/* Footer */}
-        <footer className="border-t border-[var(--surface-border)] bg-[var(--surface)] py-12">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <div>
-                <h3 className="text-lg font-bold gradient-text mb-3">
-                  🎉 Hoy Es Fiesta
-                </h3>
-                <p className="text-sm text-[var(--muted)] leading-relaxed">
-                  Tu calendario definitivo de festivos en España. Optimiza
-                  tus puentes y planifica las mejores escapadas.
-                </p>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold mb-3 text-[var(--foreground)]">
-                  Comunidades populares
-                </h4>
-                <div className="flex flex-col gap-2">
-                  {["comunidad-de-madrid", "cataluna", "andalucia", "comunidad-valenciana"].map(
-                    (slug) => (
-                      <Link
-                        key={slug}
-                        href={`/${slug}`}
-                        className="text-sm text-[var(--muted)] hover:text-[var(--primary-light)] transition-colors"
-                      >
-                        Festivos en {slug.replace(/-/g, " ").replace(/\b\w/g, (c) => c.toUpperCase())}
-                      </Link>
-                    )
-                  )}
-                </div>
-              </div>
-              <div>
-                <h4 className="text-sm font-semibold mb-3 text-[var(--foreground)]">
-                  Para Desarrolladores
-                </h4>
-                <p className="text-sm text-[var(--muted)] mb-2">
-                  ¿Necesitas datos de festivos en tu aplicación?
-                </p>
-                <Link
-                  href="/api/v1/holidays?date=2026-01-06"
-                  target="_blank"
-                  className="inline-flex items-center gap-2 text-sm font-medium text-[var(--primary-light)] hover:text-[var(--accent)] transition-colors"
-                >
-                  Prueba nuestra API →
-                </Link>
-              </div>
+        {/* Minimalist Footer */}
+        <footer className="bg-[var(--surface-alt)] py-16 mt-20 border-t border-[var(--surface-border)]">
+          <div className="mx-auto max-w-4xl px-4 text-center">
+            <h3 className="font-serif text-2xl mb-6">Hoy Es Fiesta</h3>
+            <p className="text-sm text-[var(--muted)] mb-10 max-w-md mx-auto leading-relaxed">
+              Inspiración para tus próximas escapadas. Te ayudamos a optimizar tus 
+              días de vacaciones combinándolos estratégicamente con los festivos locales.
+            </p>
+            
+            <div className="flex flex-wrap justify-center gap-6 mb-12">
+              <Link href="/comunidad-de-madrid" className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)]">Madrid</Link>
+              <Link href="/cataluna" className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)]">Cataluña</Link>
+              <Link href="/andalucia" className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)]">Andalucía</Link>
+              <Link href="/comunidad-valenciana" className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)]">Valencia</Link>
             </div>
-            <div className="mt-8 pt-8 border-t border-[var(--surface-border)] text-center text-xs text-[var(--muted)]">
-              © {new Date().getFullYear()} Hoy Es Fiesta. Todos los derechos
-              reservados.
-            </div>
+
+            <p className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] border-t border-[var(--surface-border)] pt-8">
+              © {new Date().getFullYear()} Hoy Es Fiesta. Todos los derechos reservados.
+            </p>
           </div>
         </footer>
       </body>
