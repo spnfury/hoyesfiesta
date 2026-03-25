@@ -28,6 +28,76 @@ export const comunidades: Location[] = [
   { id: 'val', name: 'Comunidad Valenciana', slug: 'comunidad-valenciana', type: 'autonomous_region', code: 'VC', parent_id: 'es' },
   { id: 'ceu', name: 'Ceuta', slug: 'ceuta', type: 'autonomous_region', code: 'CE', parent_id: 'es' },
   { id: 'mel', name: 'Melilla', slug: 'melilla', type: 'autonomous_region', code: 'ML', parent_id: 'es' },
+  // =============================================
+  // PROVINCIAS (50)
+  // =============================================
+  // Andalucía (8)
+  { id: 'p-alm', name: 'Almería', slug: 'almeria', type: 'province', code: '04', parent_id: 'and' },
+  { id: 'p-cad', name: 'Cádiz', slug: 'cadiz', type: 'province', code: '11', parent_id: 'and' },
+  { id: 'p-cor', name: 'Córdoba', slug: 'cordoba', type: 'province', code: '14', parent_id: 'and' },
+  { id: 'p-gra', name: 'Granada', slug: 'granada', type: 'province', code: '18', parent_id: 'and' },
+  { id: 'p-hue', name: 'Huelva', slug: 'huelva', type: 'province', code: '21', parent_id: 'and' },
+  { id: 'p-jae', name: 'Jaén', slug: 'jaen', type: 'province', code: '23', parent_id: 'and' },
+  { id: 'p-mal', name: 'Málaga', slug: 'malaga', type: 'province', code: '29', parent_id: 'and' },
+  { id: 'p-sev', name: 'Sevilla', slug: 'sevilla', type: 'province', code: '41', parent_id: 'and' },
+  // Aragón (3)
+  { id: 'p-hues', name: 'Huesca', slug: 'huesca', type: 'province', code: '22', parent_id: 'ara' },
+  { id: 'p-ter', name: 'Teruel', slug: 'teruel', type: 'province', code: '44', parent_id: 'ara' },
+  { id: 'p-zar', name: 'Zaragoza', slug: 'zaragoza', type: 'province', code: '50', parent_id: 'ara' },
+  // Asturias (1 - uniprovincial)
+  { id: 'p-ast', name: 'Asturias', slug: 'asturias-provincia', type: 'province', code: '33', parent_id: 'ast' },
+  // Islas Baleares (1 - uniprovincial)
+  { id: 'p-bal', name: 'Islas Baleares', slug: 'baleares-provincia', type: 'province', code: '07', parent_id: 'bal' },
+  // Canarias (2)
+  { id: 'p-lpa', name: 'Las Palmas', slug: 'las-palmas', type: 'province', code: '35', parent_id: 'can' },
+  { id: 'p-tfe', name: 'Santa Cruz de Tenerife', slug: 'santa-cruz-de-tenerife', type: 'province', code: '38', parent_id: 'can' },
+  // Cantabria (1 - uniprovincial)
+  { id: 'p-cnt', name: 'Cantabria', slug: 'cantabria-provincia', type: 'province', code: '39', parent_id: 'cnt' },
+  // Castilla-La Mancha (5)
+  { id: 'p-ab', name: 'Albacete', slug: 'albacete', type: 'province', code: '02', parent_id: 'clm' },
+  { id: 'p-cr', name: 'Ciudad Real', slug: 'ciudad-real', type: 'province', code: '13', parent_id: 'clm' },
+  { id: 'p-cu', name: 'Cuenca', slug: 'cuenca', type: 'province', code: '16', parent_id: 'clm' },
+  { id: 'p-gu', name: 'Guadalajara', slug: 'guadalajara', type: 'province', code: '19', parent_id: 'clm' },
+  { id: 'p-to', name: 'Toledo', slug: 'toledo', type: 'province', code: '45', parent_id: 'clm' },
+  // Castilla y León (9)
+  { id: 'p-av', name: 'Ávila', slug: 'avila', type: 'province', code: '05', parent_id: 'cyl' },
+  { id: 'p-bu', name: 'Burgos', slug: 'burgos', type: 'province', code: '09', parent_id: 'cyl' },
+  { id: 'p-le', name: 'León', slug: 'leon', type: 'province', code: '24', parent_id: 'cyl' },
+  { id: 'p-pa', name: 'Palencia', slug: 'palencia', type: 'province', code: '34', parent_id: 'cyl' },
+  { id: 'p-sa', name: 'Salamanca', slug: 'salamanca', type: 'province', code: '37', parent_id: 'cyl' },
+  { id: 'p-sg', name: 'Segovia', slug: 'segovia', type: 'province', code: '40', parent_id: 'cyl' },
+  { id: 'p-so', name: 'Soria', slug: 'soria', type: 'province', code: '42', parent_id: 'cyl' },
+  { id: 'p-va', name: 'Valladolid', slug: 'valladolid', type: 'province', code: '47', parent_id: 'cyl' },
+  { id: 'p-za', name: 'Zamora', slug: 'zamora', type: 'province', code: '49', parent_id: 'cyl' },
+  // Cataluña (4)
+  { id: 'p-bcn', name: 'Barcelona', slug: 'barcelona', type: 'province', code: '08', parent_id: 'cat' },
+  { id: 'p-gi', name: 'Girona', slug: 'girona', type: 'province', code: '17', parent_id: 'cat' },
+  { id: 'p-ll', name: 'Lleida', slug: 'lleida', type: 'province', code: '25', parent_id: 'cat' },
+  { id: 'p-ta', name: 'Tarragona', slug: 'tarragona', type: 'province', code: '43', parent_id: 'cat' },
+  // Comunidad Valenciana (3)
+  { id: 'p-ali', name: 'Alicante', slug: 'alicante', type: 'province', code: '03', parent_id: 'val' },
+  { id: 'p-cas', name: 'Castellón', slug: 'castellon', type: 'province', code: '12', parent_id: 'val' },
+  { id: 'p-vlc', name: 'Valencia', slug: 'valencia', type: 'province', code: '46', parent_id: 'val' },
+  // Extremadura (2)
+  { id: 'p-ba', name: 'Badajoz', slug: 'badajoz', type: 'province', code: '06', parent_id: 'ext' },
+  { id: 'p-cc', name: 'Cáceres', slug: 'caceres', type: 'province', code: '10', parent_id: 'ext' },
+  // Galicia (4)
+  { id: 'p-co', name: 'A Coruña', slug: 'a-coruna', type: 'province', code: '15', parent_id: 'gal' },
+  { id: 'p-lu', name: 'Lugo', slug: 'lugo', type: 'province', code: '27', parent_id: 'gal' },
+  { id: 'p-ou', name: 'Ourense', slug: 'ourense', type: 'province', code: '32', parent_id: 'gal' },
+  { id: 'p-po', name: 'Pontevedra', slug: 'pontevedra', type: 'province', code: '36', parent_id: 'gal' },
+  // Comunidad de Madrid (1 - uniprovincial)
+  { id: 'p-mad', name: 'Madrid', slug: 'madrid', type: 'province', code: '28', parent_id: 'mad' },
+  // Región de Murcia (1 - uniprovincial)
+  { id: 'p-mur', name: 'Murcia', slug: 'murcia-provincia', type: 'province', code: '30', parent_id: 'mur' },
+  // Navarra (1 - uniprovincial)
+  { id: 'p-nav', name: 'Navarra', slug: 'navarra-provincia', type: 'province', code: '31', parent_id: 'nav' },
+  // País Vasco (3)
+  { id: 'p-al', name: 'Álava', slug: 'alava', type: 'province', code: '01', parent_id: 'pva' },
+  { id: 'p-bi', name: 'Vizcaya', slug: 'vizcaya', type: 'province', code: '48', parent_id: 'pva' },
+  { id: 'p-ss', name: 'Guipúzcoa', slug: 'guipuzcoa', type: 'province', code: '20', parent_id: 'pva' },
+  // La Rioja (1 - uniprovincial)
+  { id: 'p-rio', name: 'La Rioja', slug: 'la-rioja-provincia', type: 'province', code: '26', parent_id: 'rio' },
 ];
 
 // =============================================
@@ -233,3 +303,16 @@ export function getMonthName(month: number): string {
   ];
   return months[month];
 }
+
+export function getProvincesByCommunity(communityId: string): Location[] {
+  return comunidades.filter(c => c.type === 'province' && c.parent_id === communityId);
+}
+
+export function getProvinceBySlug(slug: string): Location | undefined {
+  return comunidades.find(c => c.type === 'province' && c.slug === slug);
+}
+
+export function getCommunityById(id: string): Location | undefined {
+  return comunidades.find(c => c.id === id);
+}
+

@@ -6,6 +6,7 @@ import {
   getHolidaysForLocation,
   calculateBridges,
   formatDateES,
+  getProvincesByCommunity,
 } from "@/lib/holidays-data";
 
 type Props = {
@@ -17,7 +18,11 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const location = comunidades.find((c) => c.slug === comunidad);
   if (!location) return { title: "Comunidad no encontrada" };
 
-  return { title: `Festivos en ${location.name} 2026` };
+  return {
+    title: `Festivos en ${location.name} 2026 — Calendario y Puentes`,
+    description: `Calendario completo de festivos en ${location.name} 2026. Descubre los días libres nacionales y autonómicos, los mejores puentes y planifica tus escapadas.`,
+    alternates: { canonical: `https://hoyesfiesta.com/${location.slug}` },
+  };
 }
 
 export async function generateStaticParams() {
@@ -34,6 +39,7 @@ export default async function CommunityPage({ params }: Props) {
 
   const holidays = getHolidaysForLocation(location.id);
   const bridges = calculateBridges(holidays);
+  const provinces = getProvincesByCommunity(location.id);
 
   // Agrupar festivos por mes
   const holidaysByMonth: Record<string, typeof holidays> = {};
@@ -165,6 +171,27 @@ export default async function CommunityPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      {/* Provincias de esta comunidad */}
+      {provinces.length > 0 && (
+        <section className="py-20 px-4 bg-white border-t border-[var(--surface-border)]">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="font-script text-3xl text-[var(--primary)] mb-2">Festivos por</h2>
+            <h3 className="font-serif text-3xl mb-8">Provincia en {location.name}</h3>
+            <div className="flex flex-wrap justify-center gap-3">
+              {provinces.map((p) => (
+                <Link
+                  key={p.id}
+                  href={`/${location.slug}/${p.slug}`}
+                  className="px-5 py-2 bg-white border border-[var(--surface-border)] text-[0.7rem] uppercase tracking-widest text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
+                >
+                  {p.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Explore More */}
       <section className="py-20 px-4 section-alt border-t border-[var(--surface-border)]">
