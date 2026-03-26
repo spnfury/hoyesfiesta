@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import Link from "next/link";
+import ThemeToggle from "./components/ThemeToggle";
 
 export const metadata: Metadata = {
   title: {
@@ -28,7 +29,7 @@ export default function RootLayout({
         </div>
 
         {/* Elegant Navigation */}
-        <header className="w-full bg-white border-b border-[var(--surface-border)] sticky top-0 z-50">
+        <header className="w-full bg-[var(--surface)] border-b border-[var(--surface-border)] sticky top-0 z-50">
           <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-20 items-center justify-between">
               {/* Left Links */}
@@ -43,7 +44,13 @@ export default function RootLayout({
                   href="/#puentes"
                   className="text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:text-[var(--primary)] transition-colors"
                 >
-                  Mejores Puentes
+                  Puentes
+                </Link>
+                <Link
+                  href="/optimizador"
+                  className="text-[0.75rem] uppercase tracking-widest text-[var(--primary)] hover:text-[var(--primary-hover)] transition-colors font-bold"
+                >
+                  ✦ Optimizador
                 </Link>
               </div>
 
@@ -56,15 +63,8 @@ export default function RootLayout({
                 </Link>
               </div>
 
-              {/* Right Links */}
-              <div className="hidden md:flex flex-1 items-center justify-end gap-8">
-                <Link
-                  href="/api/v1/holidays?date=2026-05-01"
-                  className="text-[0.75rem] uppercase tracking-widest text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
-                  target="_blank"
-                >
-                  Herramientas API
-                </Link>
+              <div className="hidden md:flex flex-1 items-center justify-end gap-4">
+                <ThemeToggle />
               </div>
             </div>
           </div>

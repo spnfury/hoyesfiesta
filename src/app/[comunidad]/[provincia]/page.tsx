@@ -10,6 +10,7 @@ import {
   getProvincesByCommunity,
   getCommunityById,
 } from "@/lib/holidays-data";
+import { getMunicipalitiesByProvince } from "@/lib/municipalities-data";
 
 type Props = {
   params: Promise<{ comunidad: string; provincia: string }>;

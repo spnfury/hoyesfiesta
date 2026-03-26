@@ -8,6 +8,7 @@ import {
   formatDateES,
   getProvincesByCommunity,
 } from "@/lib/holidays-data";
+import { getMunicipalitiesByProvince } from "@/lib/municipalities-data";
 
 type Props = {
   params: Promise<{ comunidad: string }>;
@@ -40,6 +41,11 @@ export default async function CommunityPage({ params }: Props) {
   const holidays = getHolidaysForLocation(location.id);
   const bridges = calculateBridges(holidays);
   const provinces = getProvincesByCommunity(location.id);
+
+  // Collect all municipalities across all provinces
+  const allMunicipalities = provinces.flatMap((p) =>
+    getMunicipalitiesByProvince(p.id).map((m) => ({ ...m, provinceName: p.name, provinceSlug: p.slug }))
+  );
 
   // Agrupar festivos por mes
   const holidaysByMonth: Record<string, typeof holidays> = {};
@@ -186,6 +192,30 @@ export default async function CommunityPage({ params }: Props) {
                   className="px-5 py-2 bg-white border border-[var(--surface-border)] text-[0.7rem] uppercase tracking-widest text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
                 >
                   {p.name}
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* Municipios principales - SEO interlinking */}
+      {allMunicipalities.length > 0 && (
+        <section className="py-20 px-4 bg-white border-t border-[var(--surface-border)]">
+          <div className="mx-auto max-w-4xl text-center">
+            <h2 className="font-script text-3xl text-[var(--primary)] mb-2">¿Hoy es fiesta en...?</h2>
+            <h3 className="font-serif text-2xl mb-2">Ciudades de {location.name}</h3>
+            <p className="text-sm text-[var(--muted)] mb-8">
+              Consulta si hoy es festivo en tu ciudad
+            </p>
+            <div className="flex flex-wrap justify-center gap-3">
+              {allMunicipalities.map((m) => (
+                <Link
+                  key={m.id}
+                  href={`/${location.slug}/${m.provinceSlug}/${m.slug}`}
+                  className="px-5 py-2 bg-white border border-[var(--surface-border)] text-[0.7rem] uppercase tracking-widest text-[var(--muted)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors"
+                >
+                  {m.name}
                 </Link>
               ))}
             </div>
