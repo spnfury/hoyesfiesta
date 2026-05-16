@@ -19,10 +19,26 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const location = comunidades.find((c) => c.slug === comunidad);
   if (!location) return { title: "Comunidad no encontrada" };
 
+  const title = `Festivos en ${location.name} 2026 — Calendario y Puentes`;
+  const description = `Calendario completo de festivos en ${location.name} 2026. Días libres nacionales y autonómicos, los mejores puentes y planifica tus escapadas.`;
+  const url = `/${location.slug}`;
+
   return {
-    title: `Festivos en ${location.name} 2026 — Calendario y Puentes`,
-    description: `Calendario completo de festivos en ${location.name} 2026. Descubre los días libres nacionales y autonómicos, los mejores puentes y planifica tus escapadas.`,
-    alternates: { canonical: `https://hoyesfiesta.com/${location.slug}` },
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title,
+      description,
+      type: "website",
+      locale: "es_ES",
+      url,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+    },
   };
 }
 
@@ -60,8 +76,60 @@ export default async function CommunityPage({ params }: Props) {
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
   ];
 
+  // Schema.org JSON-LD: WebPage + ItemList de festivos + Breadcrumb
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebPage",
+        name: `Festivos en ${location.name} 2026`,
+        description: `Calendario de festivos en ${location.name} 2026 con ${holidays.length} días festivos y ${bridges.length} puentes.`,
+        url: `https://hoyesfiesta.com/${location.slug}`,
+        inLanguage: "es-ES",
+      },
+      {
+        "@type": "ItemList",
+        name: `Festivos ${location.name} 2026`,
+        numberOfItems: holidays.length,
+        itemListElement: holidays.map((h, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          item: {
+            "@type": "Event",
+            name: h.name,
+            startDate: h.date,
+            endDate: h.date,
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            eventStatus: "https://schema.org/EventScheduled",
+            location: {
+              "@type": "Place",
+              name: location.name,
+              address: {
+                "@type": "PostalAddress",
+                addressRegion: location.name,
+                addressCountry: "ES",
+              },
+            },
+          },
+        })),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: "Inicio", item: "https://hoyesfiesta.com" },
+          { "@type": "ListItem", position: 2, name: location.name, item: `https://hoyesfiesta.com/${location.slug}` },
+        ],
+      },
+    ],
+  };
+
   return (
     <div className="min-h-screen bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
+
       {/* Hero Header Minimalist */}
       <section className="pt-20 pb-16 px-4 text-center border-b border-[var(--surface-border)]">
         <div className="mx-auto max-w-4xl">
@@ -125,7 +193,12 @@ export default async function CommunityPage({ params }: Props) {
                       : `Pidiendo ${bridge.days_off_needed} día${bridge.days_off_needed > 1 ? 's' : ''}.`}
                   </p>
                   
-                  <button className="btn-outline text-[0.7rem] py-2 px-6">Ver Opciones de Viaje</button>
+                  <Link
+                    href="/optimizador"
+                    className="text-[0.75rem] uppercase tracking-widest text-[var(--primary)] hover:text-[var(--primary-hover)] border-b border-[var(--primary)] pb-1 transition-colors"
+                  >
+                    Optimizar este puente
+                  </Link>
                 </div>
               ))}
             </div>
@@ -154,7 +227,7 @@ export default async function CommunityPage({ params }: Props) {
                       {monthNames[monthIndex]}
                     </h3>
                     <div className="grid grid-cols-1 min-w-full">
-                      {monthHolidays.map((h, i) => (
+                      {monthHolidays.map((h) => (
                         <div
                           key={h.id}
                           className={`flex items-center justify-between py-4 border-b border-[var(--surface-border)] ${h.scope === "regional" ? "bg-[var(--surface-alt)] px-4 -mx-4" : ""}`}

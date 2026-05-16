@@ -4,16 +4,20 @@ import { notFound } from "next/navigation";
 import {
   comunidades,
   getHolidaysForLocation,
+  getLocalHolidaysForMunicipality,
   calculateBridges,
   formatDateES,
   getProvinceBySlug,
-  getCommunityById,
 } from "@/lib/holidays-data";
 import {
   getMunicipalityBySlug,
   getMunicipalitiesByProvince,
   getPlansForCategory,
   getAllMunicipalities,
+  getMunicipalityRankInProvince,
+  getCategoryTagline,
+  formatPopulation,
+  ordinalES,
 } from "@/lib/municipalities-data";
 
 type Props = {
@@ -95,8 +99,10 @@ export default async function MunicipalityPage({ params }: Props) {
     notFound();
   }
 
-  // Los municipios heredan los festivos de su comunidad autónoma
-  const holidays = getHolidaysForLocation(community.id);
+  // Los municipios heredan nacionales + autonómicos + sus propios festivos locales
+  const holidays = getHolidaysForLocation(municipality.id);
+  const localHolidays = getLocalHolidaysForMunicipality(municipality.id);
+  const hasLocalHolidays = localHolidays.length > 0;
   const bridges = calculateBridges(holidays);
   const plans = getPlansForCategory(municipality.category);
 
@@ -122,7 +128,47 @@ export default async function MunicipalityPage({ params }: Props) {
     "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre",
   ];
 
-  // Schema.org
+  // Datos únicos del municipio
+  const { rank: muniRank, total: muniTotal } = getMunicipalityRankInProvince(municipality);
+  const tagline = getCategoryTagline(municipality.category);
+  const populationLabel = formatPopulation(municipality.population);
+
+  // Datos derivados para la FAQ
+  const upcomingHolidays = holidays
+    .filter((h) => h.date >= today)
+    .sort((a, b) => a.date.localeCompare(b.date));
+  const nextHoliday = upcomingHolidays[0];
+
+  const bestBridge = bridges
+    .slice()
+    .sort((a, b) => b.total_days_free - a.total_days_free)[0];
+
+  const freeBridges = bridges.filter((b) => b.days_off_needed === 0);
+
+  const weekendHolidays = holidays.filter((h) => {
+    const dow = new Date(h.date + "T00:00:00").getDay();
+    return dow === 0 || dow === 6;
+  });
+
+  // Total de días de vacaciones necesarios para activar todos los puentes
+  const totalDaysOffNeeded = bridges.reduce(
+    (sum, b) => sum + b.days_off_needed,
+    0,
+  );
+  const totalFreeDaysWithBridges = bridges.reduce(
+    (sum, b) => sum + b.total_days_free,
+    0,
+  );
+
+  function daysUntil(dateStr: string): number {
+    const todayDate = new Date(today + "T00:00:00");
+    const target = new Date(dateStr + "T00:00:00");
+    return Math.round(
+      (target.getTime() - todayDate.getTime()) / (1000 * 60 * 60 * 24),
+    );
+  }
+
+  // Schema.org FAQ
   const faqItems = [
     {
       "@type": "Question",
@@ -133,7 +179,27 @@ export default async function MunicipalityPage({ params }: Props) {
           ? `Sí, hoy es festivo en ${municipality.name}: ${todayHolidays
               .map((h) => h.name)
               .join(", ")}.`
-          : `No, hoy no es festivo en ${municipality.name}. Es un día laborable normal.`,
+          : `No, hoy no es festivo en ${municipality.name}. Es un día laborable normal en este municipio de ${province.name}.`,
+      },
+    },
+    nextHoliday && {
+      "@type": "Question",
+      name: `¿Cuándo es el próximo festivo en ${municipality.name}?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `El próximo festivo en ${municipality.name} es ${nextHoliday.name}, el ${formatDateES(nextHoliday.date)} (en ${daysUntil(nextHoliday.date)} días).`,
+      },
+    },
+    {
+      "@type": "Question",
+      name: `¿Cuántos habitantes tiene ${municipality.name}?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `${municipality.name} tiene ${populationLabel} habitantes según el último padrón${
+          muniTotal > 1
+            ? `, lo que la sitúa como la ${ordinalES(muniRank)} localidad más poblada de la provincia de ${province.name}`
+            : ` y es el principal municipio recogido en ${province.name}`
+        }. ${tagline}.`,
       },
     },
     {
@@ -141,18 +207,56 @@ export default async function MunicipalityPage({ params }: Props) {
       name: `¿Cuántos festivos hay en ${municipality.name} en 2026?`,
       acceptedAnswer: {
         "@type": "Answer",
-        text: `En ${municipality.name} hay ${holidays.length} días festivos en 2026, incluyendo los festivos nacionales y los autonómicos de ${community.name}.`,
+        text: `En ${municipality.name} hay ${holidays.length} días festivos en 2026, incluyendo los festivos nacionales de España y los autonómicos de ${community.name}.`,
+      },
+    },
+    bestBridge && {
+      "@type": "Question",
+      name: `¿Cuál es el mejor puente del año en ${municipality.name}?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `El mejor puente de ${municipality.name} en 2026 es ${bestBridge.holiday.name} (${formatDateES(bestBridge.holiday.date)}): puedes disfrutar hasta ${bestBridge.total_days_free} días libres seguidos${bestBridge.days_off_needed > 0 ? ` pidiendo solo ${bestBridge.days_off_needed} día${bestBridge.days_off_needed > 1 ? "s" : ""} de vacaciones` : " sin gastar ningún día de vacaciones"}.`,
       },
     },
     {
       "@type": "Question",
-      name: `¿Cuántos puentes hay en ${municipality.name} en 2026?`,
+      name: `¿Cuántos puentes "gratis" hay en ${municipality.name} en 2026?`,
       acceptedAnswer: {
         "@type": "Answer",
-        text: `En ${municipality.name} hay ${bridges.length} oportunidades de puente en 2026, combinando festivos con fines de semana.`,
+        text: `En ${municipality.name} hay ${freeBridges.length} puente${freeBridges.length === 1 ? "" : "s"} en 2026 que no requieren gastar días de vacaciones — caen en lunes o viernes y se combinan con el fin de semana.`,
       },
     },
-  ];
+    {
+      "@type": "Question",
+      name: `¿Cuántos festivos de ${municipality.name} caen en fin de semana en 2026?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: weekendHolidays.length === 0
+          ? `Buenas noticias: en 2026 ningún festivo de ${municipality.name} cae en fin de semana, así que se aprovechan todos.`
+          : `En 2026, ${weekendHolidays.length} festivo${weekendHolidays.length === 1 ? "" : "s"} de ${municipality.name} cae${weekendHolidays.length === 1 ? "" : "n"} en sábado o domingo: ${weekendHolidays.map((h) => h.name).join(", ")}.`,
+      },
+    },
+    {
+      "@type": "Question",
+      name: `¿Cuántos días de vacaciones necesito para hacer todos los puentes de ${municipality.name}?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: `Pidiendo ${totalDaysOffNeeded} día${totalDaysOffNeeded === 1 ? "" : "s"} estratégicos de vacaciones, puedes encadenar ${bridges.length} puente${bridges.length === 1 ? "" : "s"} en ${municipality.name} y conseguir hasta ${totalFreeDaysWithBridges} días libres en total a lo largo de 2026.`,
+      },
+    },
+    {
+      "@type": "Question",
+      name: `¿${municipality.name} tiene festivos locales propios?`,
+      acceptedAnswer: {
+        "@type": "Answer",
+        text: hasLocalHolidays
+          ? `Sí. Además de los nacionales y los autonómicos de ${community.name}, ${municipality.name} celebra ${localHolidays.length} festivo${localHolidays.length > 1 ? "s" : ""} local${localHolidays.length > 1 ? "es" : ""} propio${localHolidays.length > 1 ? "s" : ""}: ${localHolidays
+              .map((h) => `${h.name} (${formatDateES(h.date)})`)
+              .join(" y ")}.`
+          : `Cada ayuntamiento aprueba anualmente sus dos festivos locales y los publica en el Boletín Oficial de la provincia de ${province.name}. Estamos completando esos datos para ${municipality.name}; mientras tanto, en esta página verás los festivos nacionales y los autonómicos de ${community.name}, que también aplican a ${municipality.name}.`,
+      },
+    },
+  ].filter(Boolean) as { "@type": "Question"; name: string; acceptedAnswer: { "@type": "Answer"; text: string } }[];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -240,9 +344,12 @@ export default async function MunicipalityPage({ params }: Props) {
           <p className="font-script text-4xl text-[var(--primary)] mb-2">
             ¿Hoy es fiesta en
           </p>
-          <h1 className="text-4xl sm:text-5xl font-serif text-[var(--foreground)] mb-6">
+          <h1 className="text-4xl sm:text-5xl font-serif text-[var(--foreground)] mb-3">
             {municipality.name}?
           </h1>
+          <p className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] mb-6 max-w-md mx-auto">
+            {tagline}
+          </p>
 
           {/* Estado de hoy */}
           <div className="bg-[var(--surface-alt)] border border-[var(--surface-border)] p-6 max-w-lg mx-auto mb-8">
@@ -293,18 +400,45 @@ export default async function MunicipalityPage({ params }: Props) {
         </div>
       </section>
 
-      {/* Intro SEO */}
+      {/* Intro SEO - única por municipio */}
       <section className="py-16 px-4 bg-white border-b border-[var(--surface-border)]">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-2xl text-center space-y-5">
           <p className="text-sm text-[var(--muted)] leading-relaxed">
-            <strong>{municipality.name}</strong> es un municipio de la provincia
-            de <strong>{province.name}</strong>, en la comunidad autónoma de{" "}
-            <strong>{community.name}</strong>. En 2026, los habitantes de{" "}
-            {municipality.name} disfrutan de{" "}
-            <strong>{holidays.length} días festivos</strong> (nacionales y
-            autonómicos), que combinados estratégicamente generan{" "}
-            <strong>{bridges.length} oportunidades de puente</strong> para
-            escapadas y descanso.
+            <strong>{municipality.name}</strong> es{" "}
+            {muniTotal > 1 ? (
+              <>
+                la <strong>{ordinalES(muniRank)}</strong> localidad más poblada
+                de la provincia de <strong>{province.name}</strong>
+              </>
+            ) : (
+              <>
+                el principal municipio recogido en{" "}
+                <strong>{province.name}</strong>
+              </>
+            )}{" "}
+            (<strong>{populationLabel}</strong> habitantes según el último
+            padrón), dentro de la comunidad autónoma de{" "}
+            <strong>{community.name}</strong>.
+          </p>
+          <p className="text-sm text-[var(--muted)] leading-relaxed">
+            Sus vecinos disfrutan en 2026 de{" "}
+            <strong>{holidays.length} días festivos</strong>
+            {hasLocalHolidays ? (
+              <>
+                : nacionales, autonómicos de {community.name} y{" "}
+                <strong>
+                  {localHolidays.length} festivo{localHolidays.length > 1 ? "s" : ""} local
+                  {localHolidays.length > 1 ? "es" : ""} propio
+                  {localHolidays.length > 1 ? "s" : ""}
+                </strong>{" "}
+                ({localHolidays.map((h) => h.name).join(", ")})
+              </>
+            ) : (
+              <> entre nacionales y autonómicos</>
+            )}
+            , lo que se traduce en{" "}
+            <strong>{bridges.length} oportunidades de puente</strong> a lo largo
+            del año para escapadas y descanso.
           </p>
         </div>
       </section>
@@ -432,10 +566,16 @@ export default async function MunicipalityPage({ params }: Props) {
                             className={
                               h.scope === "national"
                                 ? "badge-national px-2 py-0.5"
+                                : h.scope === "local"
+                                ? "badge-regional px-2 py-0.5 ring-1 ring-[var(--primary)] text-[var(--primary)]"
                                 : "badge-regional px-2 py-0.5"
                             }
                           >
-                            {h.scope === "national" ? "Nac" : "Aut"}
+                            {h.scope === "national"
+                              ? "Nac"
+                              : h.scope === "local"
+                              ? "Local"
+                              : "Aut"}
                           </span>
                         </div>
                       ))}

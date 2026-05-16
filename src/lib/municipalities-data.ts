@@ -605,3 +605,67 @@ export function getMunicipalityBySlug(slug: string): Municipality | undefined {
 export function getAllMunicipalities(): Municipality[] {
   return municipios;
 }
+
+// Devuelve el municipio más poblado de la provincia (proxy de "capital")
+export function getProvinceCapital(provinceId: string): Municipality | undefined {
+  const list = getMunicipalitiesByProvince(provinceId);
+  if (list.length === 0) return undefined;
+  return list.slice().sort((a, b) => b.population - a.population)[0];
+}
+
+export function getTopMunicipalitiesByProvince(
+  provinceId: string,
+  limit: number,
+): Municipality[] {
+  return getMunicipalitiesByProvince(provinceId)
+    .slice()
+    .sort((a, b) => b.population - a.population)
+    .slice(0, limit);
+}
+
+// Posición del municipio por población dentro de su provincia (1-indexed)
+export function getMunicipalityRankInProvince(municipality: Municipality): {
+  rank: number;
+  total: number;
+} {
+  const siblings = getMunicipalitiesByProvince(municipality.parent_id ?? '')
+    .slice()
+    .sort((a, b) => b.population - a.population);
+  const rank = siblings.findIndex((m) => m.id === municipality.id) + 1;
+  return { rank, total: siblings.length };
+}
+
+export function formatPopulation(n: number): string {
+  return n.toLocaleString('es-ES');
+}
+
+const ordinals: Record<number, string> = {
+  1: 'primera',
+  2: 'segunda',
+  3: 'tercera',
+  4: 'cuarta',
+  5: 'quinta',
+  6: 'sexta',
+  7: 'séptima',
+  8: 'octava',
+  9: 'novena',
+  10: 'décima',
+};
+export function ordinalES(n: number): string {
+  return ordinals[n] ?? `${n}ª`;
+}
+
+export function getCategoryTagline(category: MunicipalityCategory): string {
+  switch (category) {
+    case 'coastal':
+      return 'Municipio costero, ideal para escapadas de mar y sol';
+    case 'large_city':
+      return 'Núcleo urbano con todos los servicios y vida cosmopolita';
+    case 'interior':
+      return 'Localidad de interior, perfecta para una escapada tranquila';
+    case 'historic':
+      return 'Ciudad con patrimonio histórico y arquitectónico de referencia';
+    case 'mountain':
+      return 'Pueblo de montaña, ideal para naturaleza y deportes outdoor';
+  }
+}

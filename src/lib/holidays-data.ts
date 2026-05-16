@@ -3,6 +3,7 @@
 // En producción, se alimentarán desde Supabase.
 
 import { Holiday, Location, BridgeOpportunity } from './types';
+import { municipios } from './municipalities-data';
 
 // =============================================
 // COMUNIDADES AUTÓNOMAS (Localizaciones)
@@ -166,7 +167,143 @@ export const festivosRegionales2026: Holiday[] = [
   { id: 'r27', date: '2026-03-01', name: 'Día de las Islas Baleares', scope: 'regional', location_id: 'bal', is_replaceable: false },
 ];
 
-export const allHolidays2026 = [...festivosNacionales2026, ...festivosRegionales2026];
+// =============================================
+// FESTIVOS LOCALES 2026 (curados, fechas fijas verificables)
+// =============================================
+// IMPORTANTE: cada ayuntamiento aprueba sus 2 festivos locales anualmente
+// y los publica en el Boletín Oficial Provincial (BOP). Esta lista incluye
+// SOLO los festivos locales históricos de fecha fija que se vienen
+// repitiendo año tras año en estas localidades.
+// Pendiente de verificación final con los BOP de 2026 una vez publicados.
+//
+// El location_id apunta al municipio en `municipios` (lib/municipalities-data.ts)
+export const festivosLocales2026: Holiday[] = [
+  // Madrid (capital)
+  { id: 'l-mad-1', date: '2026-05-15', name: 'San Isidro Labrador', scope: 'local', location_id: 'm-madrid', is_replaceable: false },
+  { id: 'l-mad-2', date: '2026-11-09', name: 'Nuestra Señora de la Almudena', scope: 'local', location_id: 'm-madrid', is_replaceable: false },
+
+  // Barcelona
+  { id: 'l-bcn-1', date: '2026-09-24', name: 'La Mercè', scope: 'local', location_id: 'm-barcelona', is_replaceable: false },
+
+  // Valencia
+  { id: 'l-vlc-1', date: '2026-01-22', name: 'San Vicente Mártir', scope: 'local', location_id: 'm-valencia', is_replaceable: false },
+
+  // Sevilla
+  { id: 'l-sev-1', date: '2026-05-30', name: 'San Fernando', scope: 'local', location_id: 'm-sevilla', is_replaceable: false },
+
+  // Zaragoza
+  { id: 'l-zar-1', date: '2026-01-29', name: 'San Valero', scope: 'local', location_id: 'm-zaragoza', is_replaceable: false },
+  { id: 'l-zar-2', date: '2026-10-12', name: 'Virgen del Pilar', scope: 'local', location_id: 'm-zaragoza', is_replaceable: false },
+
+  // Pamplona
+  { id: 'l-pam-1', date: '2026-07-07', name: 'San Fermín', scope: 'local', location_id: 'm-pamplona', is_replaceable: false },
+
+  // San Sebastián / Donostia
+  { id: 'l-don-1', date: '2026-01-20', name: 'San Sebastián', scope: 'local', location_id: 'm-donostia', is_replaceable: false },
+
+  // Logroño
+  { id: 'l-log-1', date: '2026-06-11', name: 'San Bernabé', scope: 'local', location_id: 'm-logrono', is_replaceable: false },
+  { id: 'l-log-2', date: '2026-09-21', name: 'San Mateo', scope: 'local', location_id: 'm-logrono', is_replaceable: false },
+
+  // Palma de Mallorca
+  { id: 'l-pal-1', date: '2026-01-20', name: 'Sant Sebastià', scope: 'local', location_id: 'm-palma', is_replaceable: false },
+
+  // Las Palmas de Gran Canaria
+  { id: 'l-lpa-1', date: '2026-06-24', name: 'Fundación de Las Palmas (San Juan)', scope: 'local', location_id: 'm-las-palmas', is_replaceable: false },
+
+  // Granada
+  { id: 'l-gra-1', date: '2026-01-02', name: 'Día de la Toma', scope: 'local', location_id: 'm-granada', is_replaceable: false },
+
+  // Córdoba
+  { id: 'l-cor-1', date: '2026-10-24', name: 'San Rafael', scope: 'local', location_id: 'm-cordoba', is_replaceable: false },
+
+  // Salamanca
+  { id: 'l-sal-1', date: '2026-09-08', name: 'Virgen de la Vega', scope: 'local', location_id: 'm-salamanca', is_replaceable: false },
+
+  // Burgos
+  { id: 'l-bur-1', date: '2026-06-29', name: 'San Pedro y San Pablo', scope: 'local', location_id: 'm-burgos', is_replaceable: false },
+
+  // Ávila
+  { id: 'l-av-1', date: '2026-10-15', name: 'Santa Teresa de Jesús', scope: 'local', location_id: 'm-avila', is_replaceable: false },
+
+  // Toledo
+  { id: 'l-to-1', date: '2026-06-04', name: 'Corpus Christi', scope: 'local', location_id: 'm-toledo', is_replaceable: true },
+
+  // Bilbao
+  { id: 'l-bil-1', date: '2026-08-24', name: 'Andra Mari (Aste Nagusia)', scope: 'local', location_id: 'm-bilbao', is_replaceable: false },
+
+  // Vitoria-Gasteiz
+  { id: 'l-vit-1', date: '2026-08-05', name: 'Virgen Blanca', scope: 'local', location_id: 'm-vitoria', is_replaceable: false },
+
+  // A Coruña
+  { id: 'l-cor-co-1', date: '2026-08-15', name: 'San Roque', scope: 'local', location_id: 'm-coruna', is_replaceable: false },
+
+  // Santander
+  { id: 'l-san-1', date: '2026-07-30', name: 'San Ignacio (Día de las Instituciones)', scope: 'local', location_id: 'm-santander', is_replaceable: false },
+
+  // Oviedo
+  { id: 'l-ovi-1', date: '2026-09-21', name: 'San Mateo', scope: 'local', location_id: 'm-oviedo', is_replaceable: false },
+
+  // Murcia (capital)
+  { id: 'l-mur-1', date: '2026-09-08', name: 'Virgen de la Fuensanta', scope: 'local', location_id: 'm-murcia', is_replaceable: false },
+
+  // Málaga
+  { id: 'l-mal-1', date: '2026-09-08', name: 'Virgen de la Victoria', scope: 'local', location_id: 'm-malaga', is_replaceable: false },
+
+  // Cádiz
+  { id: 'l-cad-1', date: '2026-10-07', name: 'Virgen del Rosario', scope: 'local', location_id: 'm-cadiz', is_replaceable: false },
+
+  // Huelva
+  { id: 'l-hue-1', date: '2026-09-08', name: 'Virgen de la Cinta', scope: 'local', location_id: 'm-huelva', is_replaceable: false },
+
+  // Almería
+  { id: 'l-alm-1', date: '2026-08-25', name: 'San Indalecio', scope: 'local', location_id: 'm-almeria', is_replaceable: false },
+
+  // Jaén
+  { id: 'l-jae-1', date: '2026-06-11', name: 'Nuestro Padre Jesús del Gran Poder', scope: 'local', location_id: 'm-jaen', is_replaceable: false },
+
+  // Alicante
+  { id: 'l-ali-1', date: '2026-06-24', name: 'Hogueras de San Juan', scope: 'local', location_id: 'm-alicante', is_replaceable: false },
+
+  // Castellón
+  { id: 'l-cas-1', date: '2026-09-08', name: 'Lledó', scope: 'local', location_id: 'm-castellon', is_replaceable: false },
+
+  // Albacete
+  { id: 'l-ab-1', date: '2026-09-09', name: 'Virgen de Los Llanos (Feria)', scope: 'local', location_id: 'm-albacete', is_replaceable: false },
+
+  // Cuenca
+  { id: 'l-cu-1', date: '2026-09-21', name: 'San Mateo', scope: 'local', location_id: 'm-cuenca', is_replaceable: false },
+
+  // Guadalajara
+  { id: 'l-gu-1', date: '2026-09-17', name: 'Virgen de la Antigua', scope: 'local', location_id: 'm-guadalajara', is_replaceable: false },
+
+  // Ciudad Real
+  { id: 'l-cr-1', date: '2026-08-17', name: 'Feria y Fiestas (Pandorgas)', scope: 'local', location_id: 'm-ciudad-real', is_replaceable: false },
+
+  // León
+  { id: 'l-le-1', date: '2026-06-29', name: 'San Pedro', scope: 'local', location_id: 'm-leon', is_replaceable: false },
+
+  // Valladolid
+  { id: 'l-va-1', date: '2026-09-08', name: 'Nuestra Señora de San Lorenzo', scope: 'local', location_id: 'm-valladolid', is_replaceable: false },
+
+  // Cáceres
+  { id: 'l-cc-1', date: '2026-04-23', name: 'San Jorge', scope: 'local', location_id: 'm-caceres', is_replaceable: false },
+
+  // Badajoz
+  { id: 'l-ba-1', date: '2026-06-24', name: 'San Juan', scope: 'local', location_id: 'm-badajoz', is_replaceable: false },
+
+  // Santiago de Compostela
+  { id: 'l-stc-1', date: '2026-07-25', name: 'Día de Santiago Apóstol', scope: 'local', location_id: 'm-santiago', is_replaceable: false },
+
+  // Vigo
+  { id: 'l-vig-1', date: '2026-08-16', name: 'Reconquista de Vigo / San Roque', scope: 'local', location_id: 'm-vigo', is_replaceable: false },
+];
+
+export const allHolidays2026 = [
+  ...festivosNacionales2026,
+  ...festivosRegionales2026,
+  ...festivosLocales2026,
+];
 
 // =============================================
 // UTILIDADES PARA CALCULAR "PUENTES"
@@ -180,12 +317,6 @@ function addDays(dateStr: string, days: number): string {
   const d = new Date(dateStr + 'T00:00:00');
   d.setDate(d.getDate() + days);
   return d.toISOString().split('T')[0];
-}
-
-function diffDays(start: string, end: string): number {
-  const s = new Date(start + 'T00:00:00');
-  const e = new Date(end + 'T00:00:00');
-  return Math.round((e.getTime() - s.getTime()) / (1000 * 60 * 60 * 24));
 }
 
 export function calculateBridges(holidays: Holiday[]): BridgeOpportunity[] {
@@ -272,14 +403,42 @@ export function calculateBridges(holidays: Holiday[]): BridgeOpportunity[] {
   return bridges;
 }
 
-export function getHolidaysForLocation(locationId: string | null): Holiday[] {
-  if (!locationId) {
-    return festivosNacionales2026;
+// Construye la cadena de ancestros (incluido él mismo) para un location_id dado.
+// Funciona para comunidad, provincia o municipio.
+function getAncestorChain(locationId: string): Set<string> {
+  const allLocations: Location[] = [...comunidades, ...municipios];
+  const chain = new Set<string>();
+  let current: Location | undefined = allLocations.find(l => l.id === locationId);
+  while (current) {
+    chain.add(current.id);
+    if (!current.parent_id) break;
+    const next: Location | undefined = allLocations.find(l => l.id === current!.parent_id);
+    if (!next || chain.has(next.id)) break; // protección anti-bucle
+    current = next;
   }
-  return [
-    ...festivosNacionales2026,
-    ...festivosRegionales2026.filter(h => h.location_id === locationId),
-  ];
+  return chain;
+}
+
+// Devuelve nacionales + autonómicos + locales que aplican a la localización dada.
+// Acepta id de comunidad, provincia o municipio.
+export function getHolidaysForLocation(locationId: string | null): Holiday[] {
+  if (!locationId) return festivosNacionales2026;
+
+  const chain = getAncestorChain(locationId);
+
+  const regionalMatches = festivosRegionales2026.filter(
+    h => h.location_id && chain.has(h.location_id),
+  );
+  const localMatches = festivosLocales2026.filter(
+    h => h.location_id && chain.has(h.location_id),
+  );
+
+  return [...festivosNacionales2026, ...regionalMatches, ...localMatches];
+}
+
+// Devuelve sólo los festivos locales (scope: 'local') para un municipio concreto.
+export function getLocalHolidaysForMunicipality(municipalityId: string): Holiday[] {
+  return festivosLocales2026.filter(h => h.location_id === municipalityId);
 }
 
 export function getLocationBySlug(slug: string): Location | undefined {

@@ -6,13 +6,14 @@ import {
   calculateBridges,
   formatDateES,
 } from "@/lib/holidays-data";
+import { bookingSearchUrl, nextDayIso } from "@/lib/affiliate";
 import CountdownHero from "./components/CountdownHero";
 import AnnualCalendar from "./components/AnnualCalendar";
 import NewsletterForm from "./components/NewsletterForm";
+import BookingLink from "./components/BookingLink";
 
 function HeroSection() {
   const bridges = calculateBridges(allHolidays2026);
-
   const bridgesData = bridges.map((b) => ({
     holidayName: b.holiday.name,
     holidayDate: b.holiday.date,
@@ -23,24 +24,59 @@ function HeroSection() {
   }));
 
   return (
-    <section className="relative w-full bg-[var(--surface-alt)] py-20 sm:py-28 px-4 flex flex-col items-center justify-center border-b border-[var(--surface-border)] overflow-hidden">
-      <div className="relative mx-auto max-w-3xl text-center z-10">
-        <div className="mb-4 animate-fade-in-up">
-          <span className="font-script text-5xl sm:text-6xl text-[var(--primary)] -rotate-3 inline-block">
-            Escapadas perfectas
-          </span>
+    <section className="hero-shell relative min-h-[calc(100vh-7rem)] overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
+      <div className="hero-media" />
+      <div className="hero-overlay" />
+      <div className="hero-noise" />
+
+      <div className="relative z-10 mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
+        <div className="max-w-3xl text-white">
+          <div className="mb-5 animate-fade-in-up">
+            <span className="hero-kicker">España 2026</span>
+          </div>
+
+          <h1 className="max-w-4xl text-5xl font-serif leading-[0.93] tracking-normal text-white animate-fade-in-up stagger-1 sm:text-7xl lg:text-8xl">
+            Convierte festivos en escapadas memorables
+          </h1>
+
+          <p className="mt-7 max-w-2xl text-base leading-8 text-white/82 animate-fade-in-up stagger-2 sm:text-lg">
+            Calendario laboral, puentes y optimizador de vacaciones en una
+            experiencia visual pensada para decidir rápido cuándo viajar.
+          </p>
+
+          <div className="mt-9 flex flex-col gap-4 animate-fade-in-up stagger-3 sm:flex-row">
+            <Link href="/optimizador" className="btn-primary hero-cta">
+              Optimizar vacaciones
+            </Link>
+            <Link href="#puentes" className="btn-glass">
+              Ver mejores puentes
+            </Link>
+          </div>
+
+          <div className="hero-stats mt-12 grid grid-cols-3 gap-3 animate-fade-in-up stagger-3">
+            <div>
+              <span>{festivosNacionales2026.length}</span>
+              <p>festivos nacionales</p>
+            </div>
+            <div>
+              <span>{bridges.length}</span>
+              <p>puentes detectados</p>
+            </div>
+            <div>
+              <span>12</span>
+              <p>meses planificados</p>
+            </div>
+          </div>
         </div>
 
-        <h1 className="text-4xl sm:text-6xl font-serif text-[var(--foreground)] mb-6 animate-fade-in-up stagger-1 leading-tight">
-          Calendario de Festivos <br /> España 2026
-        </h1>
+        <div className="hero-panel animate-fade-in-up stagger-2">
+          <div className="hero-panel-label">Tu cockpit de festivos</div>
+          <CountdownHero holidays={allHolidays2026} bridges={bridgesData} />
+        </div>
+      </div>
 
-        <p className="text-sm tracking-widest uppercase text-[var(--muted)] mb-10 max-w-xl mx-auto animate-fade-in-up stagger-2 leading-loose">
-          Descubre los días libres nacionales y autonómicos. Planifica tus
-          viajes y transforma tus vacaciones en aventuras inolvidables.
-        </p>
-
-        <CountdownHero holidays={allHolidays2026} bridges={bridgesData} />
+      <div className="hero-scroll-hint">
+        <span>Explora el calendario</span>
       </div>
     </section>
   );
@@ -65,9 +101,10 @@ function UpcomingHolidaysTimeline() {
   }
 
   return (
-    <section className="py-24 px-4 bg-white">
-      <div className="mx-auto max-w-3xl">
-        <div className="text-center mb-16">
+    <section className="relative overflow-hidden bg-[var(--surface)] px-4 py-24">
+      <div className="section-ribbon" />
+      <div className="relative mx-auto max-w-3xl">
+        <div className="mb-16 text-center">
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             Próximos
           </h2>
@@ -123,35 +160,37 @@ function UpcomingHolidaysTimeline() {
 
 function CalendarSection() {
   return (
-    <section className="py-24 px-4 section-alt border-y border-[var(--surface-border)]">
+    <section className="calendar-section px-4 py-24">
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-16">
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             Vista anual
           </h2>
           <h3 className="font-serif text-3xl sm:text-4xl">Calendario 2026</h3>
-          <div className="flex items-center justify-center gap-6 mt-6">
+          <div className="flex flex-wrap items-center justify-center gap-6 mt-6">
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[var(--primary)] rounded-sm"></div>
+              <div className="w-3 h-3 bg-[var(--primary)] rounded-sm" />
               <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
                 Festivo
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 bg-[var(--surface-alt)] rounded-sm border border-[var(--surface-border)]"></div>
+              <div className="w-3 h-3 bg-[var(--surface-alt)] rounded-sm border border-[var(--surface-border)]" />
               <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
                 Fin de semana
               </span>
             </div>
             <div className="flex items-center gap-2">
-              <div className="w-3 h-3 border-2 border-[var(--foreground)] rounded-sm"></div>
+              <div className="w-3 h-3 border-2 border-[var(--foreground)] rounded-sm" />
               <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
                 Hoy
               </span>
             </div>
           </div>
         </div>
-        <AnnualCalendar holidays={allHolidays2026} />
+        <div className="calendar-stage">
+          <AnnualCalendar holidays={allHolidays2026} />
+        </div>
       </div>
     </section>
   );
@@ -161,7 +200,7 @@ function BridgesSection() {
   const bridges = calculateBridges(allHolidays2026).slice(0, 4);
 
   return (
-    <section id="puentes" className="py-24 px-4 bg-white">
+    <section id="puentes" className="bg-[var(--surface)] px-4 py-24">
       <div className="mx-auto max-w-5xl">
         <div className="text-center mb-16">
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
@@ -179,20 +218,18 @@ function BridgesSection() {
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {bridges.map((bridge, i) => {
             const location = bridge.holiday.location_id
-              ? comunidades.find(
-                  (c) => c.id === bridge.holiday.location_id
-                )
+              ? comunidades.find((c) => c.id === bridge.holiday.location_id)
               : null;
 
             return (
               <div
                 key={`${bridge.holiday.id}-${i}`}
-                className={`bg-white border border-[var(--surface-border)] p-0 flex flex-col animate-fade-in-up stagger-${
+                className={`bridge-card animate-fade-in-up stagger-${
                   (i % 2) + 1
                 }`}
               >
-                <div className="h-40 bg-[var(--surface-alt)] border-b border-[var(--surface-border)] flex items-center justify-center p-6 text-center">
-                  <h4 className="font-serif text-2xl">
+                <div className="bridge-card-top flex min-h-44 items-center justify-center p-6 text-center">
+                  <h4 className="font-serif text-3xl leading-tight text-white">
                     {bridge.holiday.name}
                   </h4>
                 </div>
@@ -210,7 +247,7 @@ function BridgesSection() {
                     )}
 
                     <div className="my-6">
-                      <span className="font-serif text-5xl text-[var(--foreground)] block mb-1">
+                      <span className="font-serif text-6xl text-[var(--foreground)] block mb-1">
                         {bridge.total_days_free}
                       </span>
                       <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
@@ -227,12 +264,32 @@ function BridgesSection() {
                     </p>
                   </div>
 
-                  <Link
-                    href="/optimizador"
-                    className="text-[0.75rem] uppercase tracking-widest text-[var(--primary)] hover:text-[var(--primary-hover)] border-b border-[var(--primary)] pb-1 self-center transition-colors"
-                  >
-                    Optimizar vacaciones
-                  </Link>
+                  <div className="flex flex-col items-center gap-3">
+                    <BookingLink
+                      href={bookingSearchUrl({
+                        checkin: bridge.bridge_start,
+                        checkout: nextDayIso(bridge.bridge_end),
+                        destination: location?.name,
+                        label: "hef-home-bridges",
+                      })}
+                      source="home"
+                      metadata={{
+                        holiday_name: bridge.holiday.name,
+                        holiday_date: bridge.holiday.date,
+                        destination: location?.name ?? null,
+                        days: bridge.total_days_free,
+                      }}
+                      className="btn-primary text-[0.75rem]"
+                    >
+                      Buscar hotel ↗
+                    </BookingLink>
+                    <Link
+                      href="/optimizador"
+                      className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] hover:text-[var(--primary)] transition-colors"
+                    >
+                      Optimizar vacaciones
+                    </Link>
+                  </div>
                 </div>
               </div>
             );
@@ -241,7 +298,7 @@ function BridgesSection() {
 
         <div className="text-center mt-12">
           <Link href="/optimizador" className="btn-primary">
-            ✦ Optimizar mis vacaciones
+            Optimizar mis vacaciones
           </Link>
         </div>
       </div>
@@ -251,19 +308,21 @@ function BridgesSection() {
 
 function OptimizerCTASection() {
   return (
-    <section className="py-20 px-4 section-alt border-y border-[var(--surface-border)]">
-      <div className="mx-auto max-w-3xl text-center">
-        <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
-          La herramienta
-        </h2>
-        <h3 className="font-serif text-3xl sm:text-4xl mb-6">
-          Optimizador de Vacaciones
-        </h3>
-        <p className="text-sm text-[var(--muted)] mb-8 max-w-md mx-auto leading-relaxed">
-          ¿Sabías que con 10 días de vacaciones puedes tener más de 30 días
-          libres? Nuestro optimizador calcula la combinación perfecta por ti.
-        </p>
-        <Link href="/optimizador" className="btn-primary">
+    <section className="bg-[var(--ink)] px-4 py-20 text-white">
+      <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1fr_auto]">
+        <div>
+          <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
+            La herramienta
+          </h2>
+          <h3 className="font-serif text-4xl sm:text-5xl mb-5 text-white">
+            De 10 días a más de 30 libres
+          </h3>
+          <p className="text-sm text-white/72 max-w-xl leading-relaxed">
+            El optimizador combina festivos, fines de semana y días de
+            vacaciones para mostrarte el itinerario con mejor rendimiento.
+          </p>
+        </div>
+        <Link href="/optimizador" className="btn-primary hero-cta">
           Calcular mis días libres
         </Link>
       </div>
@@ -272,12 +331,10 @@ function OptimizerCTASection() {
 }
 
 function CommunitiesSection() {
-  const regions = comunidades.filter(
-    (c) => c.type === "autonomous_region"
-  );
+  const regions = comunidades.filter((c) => c.type === "autonomous_region");
 
   return (
-    <section id="comunidades" className="py-24 px-4 bg-white">
+    <section id="comunidades" className="bg-[var(--surface)] px-4 py-24">
       <div className="mx-auto max-w-6xl text-center">
         <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
           Explora por
@@ -291,7 +348,7 @@ function CommunitiesSection() {
             <Link
               key={region.id}
               href={`/${region.slug}`}
-              className="px-6 py-3 border border-[var(--surface-border)] text-[0.75rem] uppercase tracking-widest text-[var(--foreground)] hover:border-[var(--primary)] hover:text-[var(--primary)] transition-colors animate-fade-in-up"
+              className="region-chip animate-fade-in-up"
               style={{ animationDelay: `${i * 0.05}s` }}
             >
               {region.name}
@@ -305,8 +362,8 @@ function CommunitiesSection() {
 
 function NewsletterSection() {
   return (
-    <section className="py-20 px-4 section-alt border-t border-[var(--surface-border)]">
-      <div className="mx-auto max-w-2xl text-center">
+    <section className="section-alt border-t border-[var(--surface-border)] px-4 py-20">
+      <div className="newsletter-panel mx-auto max-w-2xl text-center">
         <h2 className="font-script text-3xl text-[var(--primary)] mb-2">
           No te pierdas ningún
         </h2>
@@ -327,8 +384,56 @@ function NewsletterSection() {
 }
 
 export default function Home() {
+  const bridges = calculateBridges(allHolidays2026);
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: "Hoy Es Fiesta",
+        url: "https://hoyesfiesta.com",
+        description:
+          "Calendario de festivos en España 2026, optimizador de puentes y guía de escapadas.",
+        inLanguage: "es-ES",
+      },
+      {
+        "@type": "WebPage",
+        name: "Calendario de Festivos España 2026",
+        url: "https://hoyesfiesta.com",
+        description: `${festivosNacionales2026.length} festivos nacionales y ${bridges.length} puentes en 2026.`,
+      },
+      {
+        "@type": "ItemList",
+        name: "Festivos nacionales España 2026",
+        numberOfItems: festivosNacionales2026.length,
+        itemListElement: festivosNacionales2026.map((h, idx) => ({
+          "@type": "ListItem",
+          position: idx + 1,
+          item: {
+            "@type": "Event",
+            name: h.name,
+            startDate: h.date,
+            endDate: h.date,
+            eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+            eventStatus: "https://schema.org/EventScheduled",
+            location: {
+              "@type": "Place",
+              name: "España",
+              address: { "@type": "PostalAddress", addressCountry: "ES" },
+            },
+          },
+        })),
+      },
+    ],
+  };
+
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+      />
       <HeroSection />
       <UpcomingHolidaysTimeline />
       <CalendarSection />

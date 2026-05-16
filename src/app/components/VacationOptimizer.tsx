@@ -1,14 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-
-interface Holiday {
-  id: string;
-  date: string;
-  name: string;
-  scope: "national" | "regional" | "local";
-  location_id: string | null;
-}
+import { bookingSearchUrl, nextDayIso } from "@/lib/affiliate";
+import { track, plausible } from "@/lib/analytics";
 
 interface Bridge {
   holidayName: string;
@@ -88,10 +82,6 @@ export default function VacationOptimizer({ bridges }: OptimizerProps) {
       (sum, idx) => sum + sortedBridges[idx].totalDaysFree,
       0
     );
-
-  // Regular weekends (52 weeks × 2 - already counted in bridges)
-  const baseWeekendDays = 104;
-  const totalMaxFreeDays = baseWeekendDays + totalFreeDays;
 
   function toggleBridge(idx: number) {
     const newSelected = new Set(activeSelection);
@@ -223,7 +213,7 @@ export default function VacationOptimizer({ bridges }: OptimizerProps) {
       )}
 
       {/* Optimizable bridges */}
-      <div className="mb-8">
+      <div className="mb-12">
         <div className="flex items-center justify-between mb-4">
           <div>
             <h3 className="font-serif text-xl mb-1">Puentes recomendados</h3>
@@ -300,6 +290,114 @@ export default function VacationOptimizer({ bridges }: OptimizerProps) {
           })}
         </div>
       </div>
+
+      {/* Booking CTAs: una vez planificadas las escapadas, ofrecer reservar */}
+      {(freeBridges.length > 0 || activeSelection.size > 0) && (
+        <div className="mt-12 pt-12 border-t border-[var(--surface-border)]">
+          <div className="text-center mb-8">
+            <h3 className="font-script text-3xl text-[var(--primary)] mb-2">
+              Tus escapadas
+            </h3>
+            <h4 className="font-serif text-xl mb-2">Reserva con fechas exactas</h4>
+            <p className="text-sm text-[var(--muted)] max-w-md mx-auto leading-relaxed">
+              Te llevamos a Booking con las fechas del puente ya pre-rellenadas.
+              Tú solo eliges destino.
+            </p>
+          </div>
+
+          <div className="space-y-3">
+            {freeBridges.map((bridge, i) => (
+              <a
+                key={`book-free-${i}`}
+                href={bookingSearchUrl({
+                  checkin: bridge.bridgeStart,
+                  checkout: nextDayIso(bridge.bridgeEnd),
+                  label: "hef-optimizer-free",
+                })}
+                target="_blank"
+                rel="noopener nofollow sponsored"
+                onClick={() => {
+                  track("booking_click", {
+                    source: "optimizer",
+                    metadata: {
+                      kind: "free",
+                      holiday_name: bridge.holidayName,
+                      holiday_date: bridge.holidayDate,
+                      days: bridge.totalDaysFree,
+                    },
+                  });
+                  plausible("Booking", {
+                    source: "optimizer",
+                    kind: "free",
+                    holiday: bridge.holidayName,
+                  });
+                }}
+                className="optimizer-result-card flex items-center justify-between hover:border-[var(--primary)] transition-colors"
+              >
+                <div className="text-left">
+                  <p className="font-medium text-sm">{bridge.holidayName}</p>
+                  <p className="text-[0.7rem] text-[var(--muted)]">
+                    {formatDateShort(bridge.bridgeStart)} →{" "}
+                    {formatDateShort(bridge.bridgeEnd)} · {bridge.totalDaysFree} días
+                  </p>
+                </div>
+                <span className="text-[0.7rem] uppercase tracking-widest text-[var(--primary)] whitespace-nowrap">
+                  Buscar hotel ↗
+                </span>
+              </a>
+            ))}
+
+            {Array.from(activeSelection).map((idx) => {
+              const bridge = sortedBridges[idx];
+              return (
+                <a
+                  key={`book-sel-${idx}`}
+                  href={bookingSearchUrl({
+                    checkin: bridge.bridgeStart,
+                    checkout: nextDayIso(bridge.bridgeEnd),
+                    label: "hef-optimizer-selected",
+                  })}
+                  target="_blank"
+                  rel="noopener nofollow sponsored"
+                  onClick={() => {
+                    track("booking_click", {
+                      source: "optimizer",
+                      metadata: {
+                        kind: "selected",
+                        holiday_name: bridge.holidayName,
+                        holiday_date: bridge.holidayDate,
+                        days: bridge.totalDaysFree,
+                        days_off_needed: bridge.daysOffNeeded,
+                      },
+                    });
+                    plausible("Booking", {
+                      source: "optimizer",
+                      kind: "selected",
+                      holiday: bridge.holidayName,
+                    });
+                  }}
+                  className="optimizer-result-card flex items-center justify-between hover:border-[var(--primary)] transition-colors"
+                >
+                  <div className="text-left">
+                    <p className="font-medium text-sm">{bridge.holidayName}</p>
+                    <p className="text-[0.7rem] text-[var(--muted)]">
+                      {formatDateShort(bridge.bridgeStart)} →{" "}
+                      {formatDateShort(bridge.bridgeEnd)} · {bridge.totalDaysFree} días
+                    </p>
+                  </div>
+                  <span className="text-[0.7rem] uppercase tracking-widest text-[var(--primary)] whitespace-nowrap">
+                    Buscar hotel ↗
+                  </span>
+                </a>
+              );
+            })}
+          </div>
+
+          <p className="text-[0.6rem] uppercase tracking-widest text-[var(--muted)] text-center mt-6">
+            Enlaces de afiliado · Sin coste extra para ti
+          </p>
+        </div>
+      )}
     </div>
   );
 }

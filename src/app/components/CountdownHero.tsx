@@ -71,7 +71,7 @@ function isHolidayToday(holidays: Holiday[]): Holiday | null {
 }
 
 export default function CountdownHero({ holidays, bridges }: CountdownHeroProps) {
-  const [now, setNow] = useState<Date>(new Date());
+  const [, setNow] = useState<Date>(new Date());
   const [searchDate, setSearchDate] = useState("");
   const [searchResult, setSearchResult] = useState<{
     isHoliday: boolean;
@@ -79,7 +79,6 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
     nearestBridge: Bridge | null;
   } | null>(null);
 
-  // Update countdown timer every minute
   useEffect(() => {
     const interval = setInterval(() => setNow(new Date()), 60000);
     return () => clearInterval(interval);
@@ -96,15 +95,12 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
     if (!searchDate) return;
 
     const matchingHolidays = holidays.filter((h) => h.date === searchDate);
-    const isHol = matchingHolidays.length > 0;
-
-    // Find nearest bridge after search date
     const futureBridges = bridges
       .filter((b) => b.holidayDate >= searchDate)
       .sort((a, b) => a.holidayDate.localeCompare(b.holidayDate));
 
     setSearchResult({
-      isHoliday: isHol,
+      isHoliday: matchingHolidays.length > 0,
       holidays: matchingHolidays,
       nearestBridge: futureBridges[0] || null,
     });
@@ -117,9 +113,7 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
 
   return (
     <div className="animate-fade-in-up stagger-2 w-full max-w-2xl mx-auto">
-      {/* Estado de hoy + Cuenta atrás */}
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
-        {/* Hoy */}
         <div className="countdown-card">
           <p className="countdown-label">Hoy</p>
           {todayHoliday ? (
@@ -139,7 +133,6 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
           )}
         </div>
 
-        {/* Próximo puente */}
         <div className="countdown-card">
           <p className="countdown-label">Próximo puente</p>
           {nextBridge && daysToNextBridge !== null ? (
@@ -160,7 +153,6 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
         </div>
       </div>
 
-      {/* Buscador */}
       <div className="search-widget">
         <p className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)] mb-3">
           ¿Es festivo el...?
@@ -190,15 +182,12 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
           )}
         </div>
 
-        {/* Resultado */}
         {searchResult && (
           <div className="mt-4 pt-4 border-t border-[var(--surface-border)] animate-fade-in-up">
             {searchResult.isHoliday ? (
               <div className="text-center">
                 <span className="inline-block text-[var(--primary)] mb-1 text-lg">✓</span>
-                <p className="font-serif text-xl mb-1">
-                  ¡Sí, es festivo!
-                </p>
+                <p className="font-serif text-xl mb-1">¡Sí, es festivo!</p>
                 <p className="text-sm text-[var(--muted)]">
                   {searchResult.holidays.map((h) => h.name).join(", ")} —{" "}
                   {formatDateShort(searchDate)}
@@ -206,10 +195,8 @@ export default function CountdownHero({ holidays, bridges }: CountdownHeroProps)
               </div>
             ) : (
               <div className="text-center">
-                <span className="inline-block text-[var(--muted)] mb-1 text-lg">✗</span>
-                <p className="font-serif text-xl mb-1">
-                  No, es laborable
-                </p>
+                <span className="inline-block text-[var(--muted)] mb-1 text-lg">×</span>
+                <p className="font-serif text-xl mb-1">No, es laborable</p>
                 <p className="text-sm text-[var(--muted)]">
                   {formatDateShort(searchDate)}
                 </p>

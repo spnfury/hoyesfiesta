@@ -8,9 +8,13 @@ import {
   formatDateES,
   getProvinceBySlug,
   getProvincesByCommunity,
-  getCommunityById,
 } from "@/lib/holidays-data";
-import { getMunicipalitiesByProvince } from "@/lib/municipalities-data";
+import {
+  getProvinceCapital,
+  getTopMunicipalitiesByProvince,
+  getMunicipalitiesByProvince,
+  formatPopulation,
+} from "@/lib/municipalities-data";
 
 type Props = {
   params: Promise<{ comunidad: string; provincia: string }>;
@@ -80,6 +84,18 @@ export default async function ProvincePage({ params }: Props) {
   const siblingsProvinces = getProvincesByCommunity(community.id).filter(
     (p) => p.id !== province.id
   );
+
+  // Datos únicos de la provincia
+  const capital = getProvinceCapital(province.id);
+  const topMunis = getTopMunicipalitiesByProvince(province.id, 5);
+  const allProvinceMunis = getMunicipalitiesByProvince(province.id);
+  const totalProvincePopulation = allProvinceMunis.reduce(
+    (sum, m) => sum + m.population,
+    0,
+  );
+
+  const sisterProvinces = getProvincesByCommunity(community.id).length;
+  const isUniprovincial = sisterProvinces === 1;
 
   // Agrupar por mes
   const holidaysByMonth: Record<string, typeof holidays> = {};
@@ -186,19 +202,78 @@ export default async function ProvincePage({ params }: Props) {
         </div>
       </section>
 
-      {/* Intro SEO única */}
+      {/* Intro SEO única - data driven */}
       <section className="py-16 px-4 bg-white border-b border-[var(--surface-border)]">
-        <div className="mx-auto max-w-2xl text-center">
+        <div className="mx-auto max-w-2xl text-center space-y-5">
           <p className="text-sm text-[var(--muted)] leading-relaxed">
-            En la provincia de <strong>{province.name}</strong>, que pertenece a la comunidad autónoma de{" "}
-            <strong>{community.name}</strong>, se celebran un total de{" "}
-            <strong>{holidays.length} días festivos</strong> en 2026. Estos incluyen los festivos nacionales 
-            de toda España y los festivos propios de {community.name}. 
-            Combinando estos festivos de forma inteligente con tu calendario laboral, 
-            podrás disfrutar de hasta <strong>{bridges.length} puentes</strong> largos a lo largo del año.
+            {isUniprovincial ? (
+              <>
+                <strong>{province.name}</strong> es comunidad uniprovincial:
+                comparte demarcación con <strong>{community.name}</strong> y se
+                rige por su propio calendario de festivos.
+              </>
+            ) : (
+              <>
+                <strong>{province.name}</strong> es una de las {sisterProvinces}{" "}
+                provincias de <strong>{community.name}</strong>.
+              </>
+            )}{" "}
+            {capital && (
+              <>
+                Su capital, <strong>{capital.name}</strong>
+                {capital.population > 0 && (
+                  <> ({formatPopulation(capital.population)} habitantes)</>
+                )}
+                , concentra buena parte de la actividad provincial.
+              </>
+            )}{" "}
+            En conjunto, los {allProvinceMunis.length} municipios de mayor tamaño
+            recogidos aquí superan los{" "}
+            <strong>{formatPopulation(totalProvincePopulation)}</strong>{" "}
+            habitantes.
+          </p>
+          <p className="text-sm text-[var(--muted)] leading-relaxed">
+            En 2026, {province.name} disfruta de{" "}
+            <strong>{holidays.length} días festivos</strong> entre nacionales y
+            autonómicos de {community.name}, que se traducen en{" "}
+            <strong>{bridges.length} oportunidades de puente</strong>{" "}
+            distribuidas a lo largo del año.
           </p>
         </div>
       </section>
+
+      {/* Top municipios de la provincia - SEO interlinking */}
+      {topMunis.length > 1 && (
+        <section className="py-16 px-4 section-alt border-b border-[var(--surface-border)]">
+          <div className="mx-auto max-w-3xl text-center">
+            <h2 className="font-script text-3xl text-[var(--primary)] mb-2">
+              ¿Hoy es fiesta en...?
+            </h2>
+            <h3 className="font-serif text-2xl mb-8">
+              Principales ciudades de {province.name}
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {topMunis.map((m, i) => (
+                <Link
+                  key={m.id}
+                  href={`/${community.slug}/${province.slug}/${m.slug}`}
+                  className="flex items-baseline justify-between bg-white border border-[var(--surface-border)] px-5 py-3 hover:border-[var(--primary)] transition-colors text-left"
+                >
+                  <span className="flex items-baseline gap-3">
+                    <span className="text-[0.7rem] text-[var(--muted)]">
+                      #{i + 1}
+                    </span>
+                    <span className="font-serif text-base">{m.name}</span>
+                  </span>
+                  <span className="text-[0.65rem] uppercase tracking-widest text-[var(--muted)]">
+                    {formatPopulation(m.population)} hab.
+                  </span>
+                </Link>
+              ))}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Puentes */}
       {bridges.length > 0 && (
