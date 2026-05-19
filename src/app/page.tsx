@@ -27,24 +27,54 @@ function HeroSection() {
     <section className="hero-shell relative min-h-[calc(100vh-7rem)] overflow-hidden px-4 py-12 sm:px-6 lg:px-8">
       <div className="hero-media" />
       <div className="hero-overlay" />
+      <div className="hero-aurora" aria-hidden="true">
+        <span className="hero-aurora__beam" />
+        <span className="hero-aurora__beam" />
+        <span className="hero-aurora__beam" />
+      </div>
       <div className="hero-noise" />
+      <div className="hero-orbit" aria-hidden="true" data-hero-reveal>
+        <span>01 ENE</span>
+        <span>19 MAR</span>
+        <span>01 MAY</span>
+        <span>12 OCT</span>
+      </div>
+      <div className="hero-ticket-stack" aria-hidden="true" data-hero-reveal>
+        <div className="hero-ticket hero-ticket--one" data-float>
+          <strong>Puente premium</strong>
+          <span>4 días libres</span>
+        </div>
+        <div className="hero-ticket hero-ticket--two" data-float>
+          <strong>Escapada lista</strong>
+          <span>Fechas calculadas</span>
+        </div>
+      </div>
 
       <div className="relative z-10 mx-auto grid min-h-[calc(100vh-12rem)] max-w-7xl items-center gap-12 lg:grid-cols-[1.02fr_0.98fr]">
         <div className="max-w-3xl text-white">
-          <div className="mb-5 animate-fade-in-up">
+          <div className="mb-5 animate-fade-in-up" data-hero-reveal>
             <span className="hero-kicker">España 2026</span>
           </div>
 
-          <h1 className="max-w-4xl text-5xl font-serif leading-[0.93] tracking-normal text-white animate-fade-in-up stagger-1 sm:text-7xl lg:text-8xl">
+          <h1
+            className="max-w-4xl text-5xl font-serif leading-[0.93] tracking-normal text-white animate-fade-in-up stagger-1 sm:text-7xl lg:text-8xl"
+            data-hero-reveal
+          >
             Convierte festivos en escapadas memorables
           </h1>
 
-          <p className="mt-7 max-w-2xl text-base leading-8 text-white/82 animate-fade-in-up stagger-2 sm:text-lg">
+          <p
+            className="mt-7 max-w-2xl text-base leading-8 text-white/82 animate-fade-in-up stagger-2 sm:text-lg"
+            data-hero-reveal
+          >
             Calendario laboral, puentes y optimizador de vacaciones en una
             experiencia visual pensada para decidir rápido cuándo viajar.
           </p>
 
-          <div className="mt-9 flex flex-col gap-4 animate-fade-in-up stagger-3 sm:flex-row">
+          <div
+            className="mt-9 flex flex-col gap-4 animate-fade-in-up stagger-3 sm:flex-row"
+            data-hero-reveal
+          >
             <Link href="/optimizador" className="btn-primary hero-cta">
               Optimizar vacaciones
             </Link>
@@ -53,23 +83,27 @@ function HeroSection() {
             </Link>
           </div>
 
-          <div className="hero-stats mt-12 grid grid-cols-3 gap-3 animate-fade-in-up stagger-3">
-            <div>
+          <div
+            className="hero-stats mt-12 grid grid-cols-3 gap-3 animate-fade-in-up stagger-3"
+            data-hero-reveal
+            data-stagger
+          >
+            <div data-stagger-item data-float>
               <span>{festivosNacionales2026.length}</span>
               <p>festivos nacionales</p>
             </div>
-            <div>
+            <div data-stagger-item data-float>
               <span>{bridges.length}</span>
               <p>puentes detectados</p>
             </div>
-            <div>
+            <div data-stagger-item data-float>
               <span>12</span>
               <p>meses planificados</p>
             </div>
           </div>
         </div>
 
-        <div className="hero-panel animate-fade-in-up stagger-2">
+        <div className="hero-panel animate-fade-in-up stagger-2" data-hero-reveal>
           <div className="hero-panel-label">Tu cockpit de festivos</div>
           <CountdownHero holidays={allHolidays2026} bridges={bridgesData} />
         </div>
@@ -104,7 +138,7 @@ function UpcomingHolidaysTimeline() {
     <section className="relative overflow-hidden bg-[var(--surface)] px-4 py-24">
       <div className="section-ribbon" />
       <div className="relative mx-auto max-w-3xl">
-        <div className="mb-16 text-center">
+        <div className="mb-16 text-center" data-reveal>
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             Próximos
           </h2>
@@ -118,13 +152,14 @@ function UpcomingHolidaysTimeline() {
           )}
         </div>
 
-        <div className="space-y-0">
+        <div className="space-y-0" data-stagger>
           {upcoming.map((holiday, i) => {
             const days = getDaysUntil(holiday.date);
             return (
               <div
                 key={holiday.id}
                 className="timeline-item pb-8 animate-fade-in-up"
+                data-stagger-item
                 style={{ animationDelay: `${i * 0.1}s` }}
               >
                 <div className="flex items-start justify-between gap-6">
@@ -148,7 +183,7 @@ function UpcomingHolidaysTimeline() {
           })}
         </div>
 
-        <div className="text-center mt-4">
+        <div className="text-center mt-4" data-reveal>
           <span className="text-[0.7rem] uppercase tracking-widest text-[var(--muted)]">
             {festivosNacionales2026.length} festivos nacionales en 2026
           </span>
@@ -162,7 +197,7 @@ function CalendarSection() {
   return (
     <section className="calendar-section px-4 py-24">
       <div className="mx-auto max-w-5xl">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-reveal>
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             Vista anual
           </h2>
@@ -188,7 +223,7 @@ function CalendarSection() {
             </div>
           </div>
         </div>
-        <div className="calendar-stage">
+        <div className="calendar-stage" data-reveal>
           <AnnualCalendar holidays={allHolidays2026} />
         </div>
       </div>
@@ -202,7 +237,7 @@ function BridgesSection() {
   return (
     <section id="puentes" className="bg-[var(--surface)] px-4 py-24">
       <div className="mx-auto max-w-5xl">
-        <div className="text-center mb-16">
+        <div className="text-center mb-16" data-reveal>
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             Escapadas largas
           </h2>
@@ -215,7 +250,7 @@ function BridgesSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8" data-stagger>
           {bridges.map((bridge, i) => {
             const location = bridge.holiday.location_id
               ? comunidades.find((c) => c.id === bridge.holiday.location_id)
@@ -227,6 +262,7 @@ function BridgesSection() {
                 className={`bridge-card animate-fade-in-up stagger-${
                   (i % 2) + 1
                 }`}
+                data-stagger-item
               >
                 <div className="bridge-card-top flex min-h-44 items-center justify-center p-6 text-center">
                   <h4 className="font-serif text-3xl leading-tight text-white">
@@ -296,7 +332,7 @@ function BridgesSection() {
           })}
         </div>
 
-        <div className="text-center mt-12">
+        <div className="text-center mt-12" data-reveal>
           <Link href="/optimizador" className="btn-primary">
             Optimizar mis vacaciones
           </Link>
@@ -309,7 +345,10 @@ function BridgesSection() {
 function OptimizerCTASection() {
   return (
     <section className="bg-[var(--ink)] px-4 py-20 text-white">
-      <div className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1fr_auto]">
+      <div
+        className="mx-auto grid max-w-5xl items-center gap-10 md:grid-cols-[1fr_auto]"
+        data-reveal
+      >
         <div>
           <h2 className="font-script text-4xl text-[var(--primary)] mb-2">
             La herramienta
@@ -343,12 +382,13 @@ function CommunitiesSection() {
           Destinos &amp; Comunidades
         </h3>
 
-        <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto">
+        <div className="flex flex-wrap justify-center gap-4 max-w-4xl mx-auto" data-stagger>
           {regions.map((region, i) => (
             <Link
               key={region.id}
               href={`/${region.slug}`}
               className="region-chip animate-fade-in-up"
+              data-stagger-item
               style={{ animationDelay: `${i * 0.05}s` }}
             >
               {region.name}
@@ -363,7 +403,7 @@ function CommunitiesSection() {
 function NewsletterSection() {
   return (
     <section className="section-alt border-t border-[var(--surface-border)] px-4 py-20">
-      <div className="newsletter-panel mx-auto max-w-2xl text-center">
+      <div className="newsletter-panel mx-auto max-w-2xl text-center" data-reveal>
         <h2 className="font-script text-3xl text-[var(--primary)] mb-2">
           No te pierdas ningún
         </h2>

@@ -3,6 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import Link from "next/link";
 import ThemeToggle from "./components/ThemeToggle";
+import MotionEnhancer from "./components/MotionEnhancer";
 
 const SITE_URL = "https://hoyesfiesta.com";
 
@@ -82,6 +83,7 @@ export default function RootLayout({
         />
       </head>
       <body className="min-h-full flex flex-col bg-[var(--background)] text-[var(--foreground)]">
+        <MotionEnhancer />
         <div className="w-full bg-[var(--ink)] py-2 text-center text-white">
           <p className="text-[0.65rem] uppercase tracking-widest text-white/68">
             Tu guía personal de festivos y escapadas 2026
